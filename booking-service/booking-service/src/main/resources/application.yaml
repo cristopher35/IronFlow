@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: booking-service
+  profiles:
+    active: h2
+
+server:
+  port: 8085
+  servlet:
+    context-path: /booking-app

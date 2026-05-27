@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: class-service
+
+server:
+  port: 8084
+  servlet:
+    context-path: /class-app

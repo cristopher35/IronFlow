@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: equipment-service
+
+server:
+  port: 8088
+  servlet:
+    context-path: /equipment-app
