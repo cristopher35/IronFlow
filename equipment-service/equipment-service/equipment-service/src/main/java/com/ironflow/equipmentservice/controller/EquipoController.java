@@ -18,15 +18,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/equipos")
 @RequiredArgsConstructor
+@Tag(name = "Equipos", description = "Inventario, estado y mantenimiento")
 public class EquipoController {
 
     private final EquipoService equipoService;
 
     @PostMapping
+    @Operation(summary = "Crear equipo", description = "Retorna 201 o 400 si estado, stock y mantenimiento son inconsistentes")
     public ResponseEntity<EquipoResponse> crearEquipo(@Valid @RequestBody EquipoRequest request) {
         EquipoResponse respuesta = equipoService.crearEquipo(request);
 
@@ -39,27 +43,32 @@ public class EquipoController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar equipos")
     public ResponseEntity<List<EquipoResponse>> listarEquipos() {
         return ResponseEntity.ok(equipoService.listarEquipos());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar equipo por ID", description = "Retorna 200 o 404")
     public ResponseEntity<EquipoResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(equipoService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar equipo", description = "Retorna 200, 400, 404 o 409")
     public ResponseEntity<EquipoResponse> actualizarEquipo(@PathVariable Long id, @Valid @RequestBody EquipoRequest request) {
         return ResponseEntity.ok(equipoService.actualizarEquipo(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Desactivar equipo", description = "Realiza baja lógica, pone stock en cero y retorna 204")
     public ResponseEntity<Void> eliminarEquipo(@PathVariable Long id) {
         equipoService.eliminarEquipo(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/estado/{estado}")
+    @Operation(summary = "Listar equipos por estado")
     public ResponseEntity<List<EquipoResponse>> listarPorEstado(@PathVariable String estado) {
         return ResponseEntity.ok(equipoService.listarPorEstado(estado));
     }
