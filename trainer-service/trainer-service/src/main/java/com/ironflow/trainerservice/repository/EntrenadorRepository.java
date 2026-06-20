@@ -9,7 +9,8 @@ import java.util.List;
 @Repository
 public interface EntrenadorRepository extends JpaRepository<Entrenador, Long> {
 
-    List<Entrenador> findByEspecialidadIgnoreCase(String especialidad);
-    boolean existsByCorreo(String correo);
+    List<Entrenador> findByEspecialidadIgnoreCaseAndActivoTrue(String especialidad);
+    boolean existsByCorreoIgnoreCase(String correo);
+    boolean existsByCorreoIgnoreCaseAndIdNot(String correo, Long id);
     List<Entrenador> findByActivoTrue();
 }

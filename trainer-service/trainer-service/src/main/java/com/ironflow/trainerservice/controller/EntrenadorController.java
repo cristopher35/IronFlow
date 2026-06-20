@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,6 +51,12 @@ public class EntrenadorController {
     @PutMapping("/{id}")
     public ResponseEntity<EntrenadorResponse> actualizarEntrenador(@PathVariable Long id, @Valid @RequestBody EntrenadorRequest request) {
         return ResponseEntity.ok(entrenadorService.actualizarEntrenador(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarEntrenador(@PathVariable Long id) {
+        entrenadorService.eliminarEntrenador(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/especialidad/{especialidad}")

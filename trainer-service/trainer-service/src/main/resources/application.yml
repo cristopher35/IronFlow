@@ -1,6 +1,10 @@
 spring:
   application:
     name: trainer-service
+  profiles:
+    default: h2
+  jpa:
+    open-in-view: false
 
 server:
   port: 8086

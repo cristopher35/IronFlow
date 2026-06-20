@@ -23,7 +23,7 @@ public class EntrenadorService {
     public EntrenadorResponse crearEntrenador(EntrenadorRequest request) {
         log.info("Registrando entrenador: {}", request.getNombre());
 
-        if (entrenadorRepository.existsByCorreo(request.getCorreo())) {
+        if (entrenadorRepository.existsByCorreoIgnoreCase(request.getCorreo())) {
             log.warn("Ya existe un entrenador con correo: {}", request.getCorreo());
             throw new IllegalArgumentException("Ya existe un entrenador con el correo: " + request.getCorreo());
         }
@@ -34,6 +34,8 @@ public class EntrenadorService {
                 .aniosExperiencia(request.getAniosExperiencia())
                 .telefono(request.getTelefono())
                 .correo(request.getCorreo())
+                .estado(request.getEstado().toUpperCase())
+                .activo("ACTIVO".equalsIgnoreCase(request.getEstado()))
                 .build();
 
         Entrenador guardado = entrenadorRepository.save(entrenador);
@@ -44,7 +46,7 @@ public class EntrenadorService {
     @Transactional(readOnly = true)
     public List<EntrenadorResponse> listarEntrenadores() {
         log.info("Listando todos los entrenadores");
-        return entrenadorRepository.findAll()
+        return entrenadorRepository.findByActivoTrue()
                 .stream()
                 .map(this::mapearRespuesta)
                 .toList();
@@ -74,12 +76,17 @@ public class EntrenadorService {
             log.warn("Intento de actualizar entrenador INACTIVO con id: {}", id);
             throw new IllegalArgumentException("No se puede actualizar un entrenador INACTIVO");
         }
+        if (entrenadorRepository.existsByCorreoIgnoreCaseAndIdNot(request.getCorreo(), id)) {
+            throw new IllegalArgumentException("Ya existe un entrenador con el correo: " + request.getCorreo());
+        }
 
         entrenador.setNombre(request.getNombre());
         entrenador.setEspecialidad(request.getEspecialidad());
         entrenador.setAniosExperiencia(request.getAniosExperiencia());
         entrenador.setTelefono(request.getTelefono());
         entrenador.setCorreo(request.getCorreo());
+        entrenador.setEstado(request.getEstado().toUpperCase());
+        entrenador.setActivo("ACTIVO".equalsIgnoreCase(request.getEstado()));
 
         Entrenador actualizado = entrenadorRepository.save(entrenador);
         log.info("Entrenador actualizado con ID: {}", actualizado.getId());
@@ -103,7 +110,7 @@ public class EntrenadorService {
     @Transactional(readOnly = true)
     public List<EntrenadorResponse> listarPorEspecialidad(String especialidad) {
         log.info("Listando entrenadores por especialidad: {}", especialidad);
-        return entrenadorRepository.findByEspecialidadIgnoreCase(especialidad)
+        return entrenadorRepository.findByEspecialidadIgnoreCaseAndActivoTrue(especialidad)
                 .stream()
                 .map(this::mapearRespuesta)
                 .toList();
