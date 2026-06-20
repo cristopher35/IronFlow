@@ -163,8 +163,8 @@ public class HorarioServiceImpl implements HorarioService {
         } catch (NoSuchElementException ex) {
             throw ex;
         } catch (Exception ex) {
-            log.warn("No fue posible validar el entrenador con id: {}", entrenadorId);
-            throw new NoSuchElementException("No existe un entrenador con id: " + entrenadorId);
+            log.error("No fue posible comunicarse con trainer-service para validar el id: {}", entrenadorId, ex);
+            throw new IllegalStateException("No fue posible validar el entrenador porque trainer-service no está disponible");
         }
     }
 

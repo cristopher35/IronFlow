@@ -11,6 +11,6 @@ services:
     base-url: ${TRAINER_SERVICE_URL:http://localhost:8086/trainer-app}
 
 server:
-  port: 8084
+  port: ${PORT:8084}
   servlet:
     context-path: /class-app
