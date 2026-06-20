@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/equipos")
@@ -31,6 +33,7 @@ public class EquipoController {
 
     @PostMapping
     @Operation(summary = "Crear equipo", description = "Retorna 201 o 400 si estado, stock y mantenimiento son inconsistentes")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Equipo creado"), @ApiResponse(responseCode = "400", description = "Datos o estado inconsistentes")})
     public ResponseEntity<EquipoResponse> crearEquipo(@Valid @RequestBody EquipoRequest request) {
         EquipoResponse respuesta = equipoService.crearEquipo(request);
 
@@ -50,18 +53,21 @@ public class EquipoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar equipo por ID", description = "Retorna 200 o 404")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Equipo encontrado"), @ApiResponse(responseCode = "404", description = "Equipo no encontrado")})
     public ResponseEntity<EquipoResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(equipoService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar equipo", description = "Retorna 200, 400, 404 o 409")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Equipo actualizado"), @ApiResponse(responseCode = "400", description = "Datos inconsistentes"), @ApiResponse(responseCode = "404", description = "Equipo no encontrado"), @ApiResponse(responseCode = "409", description = "Equipo inactivo")})
     public ResponseEntity<EquipoResponse> actualizarEquipo(@PathVariable Long id, @Valid @RequestBody EquipoRequest request) {
         return ResponseEntity.ok(equipoService.actualizarEquipo(id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar equipo", description = "Realiza baja lógica, pone stock en cero y retorna 204")
+    @ApiResponses({@ApiResponse(responseCode = "204", description = "Equipo desactivado"), @ApiResponse(responseCode = "404", description = "Equipo no encontrado")})
     public ResponseEntity<Void> eliminarEquipo(@PathVariable Long id) {
         equipoService.eliminarEquipo(id);
         return ResponseEntity.noContent().build();
