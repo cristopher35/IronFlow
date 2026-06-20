@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/entrenadores")
@@ -31,6 +33,7 @@ public class EntrenadorController {
 
     @PostMapping
     @Operation(summary = "Crear entrenador", description = "Registra un entrenador; retorna 201, 400 por datos inválidos o 409 por correo duplicado")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Entrenador creado"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "409", description = "Correo duplicado")})
     public ResponseEntity<EntrenadorResponse> crearEntrenador(@Valid @RequestBody EntrenadorRequest request) {
         EntrenadorResponse respuesta = entrenadorService.crearEntrenador(request);
 
@@ -50,18 +53,21 @@ public class EntrenadorController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar entrenador por ID", description = "Retorna 200 o 404")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Entrenador encontrado"), @ApiResponse(responseCode = "404", description = "Entrenador no encontrado")})
     public ResponseEntity<EntrenadorResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(entrenadorService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar entrenador", description = "Retorna 200, 404 o 409")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Entrenador actualizado"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "404", description = "Entrenador no encontrado"), @ApiResponse(responseCode = "409", description = "Conflicto de negocio")})
     public ResponseEntity<EntrenadorResponse> actualizarEntrenador(@PathVariable Long id, @Valid @RequestBody EntrenadorRequest request) {
         return ResponseEntity.ok(entrenadorService.actualizarEntrenador(id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar entrenador", description = "Realiza baja lógica y retorna 204")
+    @ApiResponses({@ApiResponse(responseCode = "204", description = "Entrenador desactivado"), @ApiResponse(responseCode = "404", description = "Entrenador no encontrado")})
     public ResponseEntity<Void> eliminarEntrenador(@PathVariable Long id) {
         entrenadorService.eliminarEntrenador(id);
         return ResponseEntity.noContent().build();
