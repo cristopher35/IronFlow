@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 
 @RestController
@@ -24,12 +26,14 @@ public class MiembroController {
 
     @PostMapping
     @Operation(summary = "Crear miembro", description = "Retorna 201, 400 por datos inválidos o 409 por RUT/email duplicado")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Miembro creado"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "409", description = "RUT o email duplicado")})
     public ResponseEntity<MiembroResponse> crearMiembro(@Valid @RequestBody MiembroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(miembroService.crearMiembro(request));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar miembro por ID")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Miembro encontrado"), @ApiResponse(responseCode = "404", description = "Miembro no encontrado")})
     public ResponseEntity<MiembroResponse> obtenerMiembroPorId(@PathVariable Long id) {
         return ResponseEntity.ok(miembroService.obtenerMiembroPorId(id));
     }
@@ -42,12 +46,14 @@ public class MiembroController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Actualizar miembro")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Miembro actualizado"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "404", description = "Miembro no encontrado"), @ApiResponse(responseCode = "409", description = "Conflicto de negocio")})
     public ResponseEntity<MiembroResponse> actualizarMiembro(@PathVariable Long id, @Valid @RequestBody MiembroRequest request) {
         return ResponseEntity.ok(miembroService.actualizarMiembro(id, request));
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar miembro", description = "Realiza baja lógica y retorna 204")
+    @ApiResponses({@ApiResponse(responseCode = "204", description = "Miembro desactivado"), @ApiResponse(responseCode = "404", description = "Miembro no encontrado")})
     public ResponseEntity<Void> eliminarMiembro(@PathVariable Long id) {
         miembroService.eliminarMiembro(id);
         return ResponseEntity.noContent().build();
