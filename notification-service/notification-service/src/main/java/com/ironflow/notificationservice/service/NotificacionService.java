@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -100,9 +101,11 @@ public class NotificacionService {
             }
         } catch (RecursoNoEncontradoException ex) {
             throw ex;
-        } catch (Exception ex) {
-            log.warn("No fue posible validar el miembro con id: {}", miembroId);
+        } catch (NoSuchElementException ex) {
             throw new RecursoNoEncontradoException("No existe un miembro con id: " + miembroId);
+        } catch (Exception ex) {
+            log.error("No fue posible comunicarse con member-service para validar el id: {}", miembroId, ex);
+            throw new IllegalStateException("No fue posible validar el miembro porque member-service no está disponible");
         }
     }
 

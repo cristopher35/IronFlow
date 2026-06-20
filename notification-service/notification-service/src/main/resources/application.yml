@@ -11,6 +11,6 @@ services:
     base-url: ${MEMBER_SERVICE_URL:http://localhost:8081/member-app}
 
 server:
-  port: 8090
+  port: ${PORT:8090}
   servlet:
     context-path: /notification-app
