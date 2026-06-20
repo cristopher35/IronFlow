@@ -1,0 +1,50 @@
+services:
+  member-service:
+    build: ./memberService/memberService/IronFlow
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+    ports: ["8081:8081"]
+
+  trainer-service:
+    build: ./trainer-service/trainer-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+    ports: ["8086:8086"]
+
+  class-service:
+    build: ./class-service/class-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+      TRAINER_SERVICE_URL: http://trainer-service:8086/trainer-app
+    ports: ["8084:8084"]
+    depends_on: [trainer-service]
+
+  equipment-service:
+    build: ./equipment-service/equipment-service/equipment-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+    ports: ["8088:8088"]
+
+  notification-service:
+    build: ./notification-service/notification-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+      MEMBER_SERVICE_URL: http://member-service:8081/member-app
+    ports: ["8090:8090"]
+    depends_on: [member-service]
+
+  api-gateway:
+    build: ./api-gateway
+    environment:
+      MEMBER_SERVICE_URL: http://member-service:8081
+      CLASS_SERVICE_URL: http://class-service:8084
+      TRAINER_SERVICE_URL: http://trainer-service:8086
+      EQUIPMENT_SERVICE_URL: http://equipment-service:8088
+      NOTIFICATION_SERVICE_URL: http://notification-service:8090
+    ports: ["8080:8080"]
+    depends_on:
+      - member-service
+      - trainer-service
+      - class-service
+      - equipment-service
+      - notification-service
