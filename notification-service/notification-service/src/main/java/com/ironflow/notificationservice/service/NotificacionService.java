@@ -26,20 +26,14 @@ public class NotificacionService {
     public NotificacionResponse crearNotificacion(NotificacionRequest request) {
         log.info("Registrando notificacion para miembro ID: {}", request.getMiembroId());
 
-        // Validar que el miembro existe en member-service
-        try {
-            memberClient.getMemberById(request.getMiembroId());
-        } catch (Exception e) {
-            log.warn("Miembro no encontrado con id: {}", request.getMiembroId());
-            throw new RecursoNoEncontradoException("No existe un miembro con id: " + request.getMiembroId());
-        }
+        validarMiembro(request.getMiembroId());
 
         Notificacion notificacion = Notificacion.builder()
                 .miembroId(request.getMiembroId())
-                .canal(request.getCanal())
+                .canal(request.getCanal().toUpperCase())
                 .asunto(request.getAsunto())
                 .mensaje(request.getMensaje())
-                .estado(request.getEstado())
+                .estado(request.getEstado().toUpperCase())
                 .fechaEnvio(LocalDateTime.now())
                 .build();
 
@@ -69,11 +63,12 @@ public class NotificacionService {
         Notificacion notificacion = notificacionRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe una notificacion con id " + id));
 
+        validarMiembro(request.getMiembroId());
         notificacion.setMiembroId(request.getMiembroId());
-        notificacion.setCanal(request.getCanal());
+        notificacion.setCanal(request.getCanal().toUpperCase());
         notificacion.setAsunto(request.getAsunto());
         notificacion.setMensaje(request.getMensaje());
-        notificacion.setEstado(request.getEstado());
+        notificacion.setEstado(request.getEstado().toUpperCase());
 
         Notificacion actualizada = notificacionRepository.save(notificacion);
         log.info("Notificacion actualizada con ID: {}", actualizada.getId());
@@ -87,6 +82,28 @@ public class NotificacionService {
                 .stream()
                 .map(this::mapearRespuesta)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<NotificacionResponse> listarPorMiembro(Long miembroId) {
+        return notificacionRepository.findByMiembroId(miembroId)
+                .stream()
+                .map(this::mapearRespuesta)
+                .toList();
+    }
+
+    private void validarMiembro(Long miembroId) {
+        try {
+            Object miembro = memberClient.getMemberById(miembroId);
+            if (miembro == null) {
+                throw new RecursoNoEncontradoException("No existe un miembro con id: " + miembroId);
+            }
+        } catch (RecursoNoEncontradoException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            log.warn("No fue posible validar el miembro con id: {}", miembroId);
+            throw new RecursoNoEncontradoException("No existe un miembro con id: " + miembroId);
+        }
     }
 
     private NotificacionResponse mapearRespuesta(Notificacion notificacion) {

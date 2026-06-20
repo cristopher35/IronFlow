@@ -56,4 +56,9 @@ public class NotificacionController {
     public ResponseEntity<List<NotificacionResponse>> listarPorCanal(@PathVariable String canal) {
         return ResponseEntity.ok(notificacionService.listarPorCanal(canal));
     }
+
+    @GetMapping("/miembro/{miembroId}")
+    public ResponseEntity<List<NotificacionResponse>> listarPorMiembro(@PathVariable Long miembroId) {
+        return ResponseEntity.ok(notificacionService.listarPorMiembro(miembroId));
+    }
 }
