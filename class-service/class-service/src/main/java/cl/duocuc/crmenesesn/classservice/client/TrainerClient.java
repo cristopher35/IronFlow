@@ -1,20 +1,22 @@
 package cl.duocuc.crmenesesn.classservice.client;
 
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class TrainerClient {
 
     private final RestTemplate restTemplate;
-    private static final String TRAINER_SERVICE_URL = "http://localhost:8086/trainer-app";
+    private final String trainerServiceUrl;
 
-    public TrainerClient() {
+    public TrainerClient(@Value("${services.trainer.base-url:http://localhost:8086/trainer-app}") String trainerServiceUrl) {
         this.restTemplate = new RestTemplate();
+        this.trainerServiceUrl = trainerServiceUrl;
     }
 
     public Object getTrainerById(Long id) {
-        String url = TRAINER_SERVICE_URL + "/api/entrenadores/" + id;
+        String url = trainerServiceUrl + "/api/entrenadores/" + id;
         return restTemplate.getForObject(url, Object.class);
     }
 }
