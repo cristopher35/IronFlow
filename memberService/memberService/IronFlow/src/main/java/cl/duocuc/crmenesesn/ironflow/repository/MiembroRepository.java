@@ -9,4 +9,6 @@ public interface MiembroRepository extends JpaRepository<Miembro, Long> {
 
     boolean existsByRut(String rut);
     boolean existsByEmail(String email);
+    boolean existsByRutAndIdNot(String rut, Long id);
+    boolean existsByEmailAndIdNot(String email, Long id);
 }

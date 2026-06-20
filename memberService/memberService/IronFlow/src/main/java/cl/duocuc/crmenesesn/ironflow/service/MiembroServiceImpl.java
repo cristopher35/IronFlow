@@ -7,6 +7,7 @@ import cl.duocuc.crmenesesn.ironflow.repository.MiembroRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ public class MiembroServiceImpl implements MiembroService {
     private final MiembroRepository miembroRepository;
 
     @Override
+    @Transactional
     public MiembroResponse crearMiembro(MiembroRequest request) {
         log.info("Creando miembro con RUT: {}", request.rut());
         if (miembroRepository.existsByRut(request.rut())) {
@@ -41,6 +43,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MiembroResponse obtenerMiembroPorId(Long id) {
         log.info("Buscando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)
@@ -52,6 +55,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MiembroResponse> obtenerTodosLosMiembros() {
         log.info("Obteniendo todos los miembros");
         return miembroRepository.findAll()
@@ -61,6 +65,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional
     public MiembroResponse actualizarMiembro(Long id, MiembroRequest request) {
         log.info("Actualizando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)
@@ -72,6 +77,12 @@ public class MiembroServiceImpl implements MiembroService {
             log.warn("Intento de actualizar miembro INACTIVO con id: {}", id);
             throw new IllegalArgumentException("No se puede actualizar un miembro INACTIVO");
         }
+        if (miembroRepository.existsByRutAndIdNot(request.rut(), id)) {
+            throw new IllegalArgumentException("Ya existe un miembro con el RUT: " + request.rut());
+        }
+        if (miembroRepository.existsByEmailAndIdNot(request.email(), id)) {
+            throw new IllegalArgumentException("Ya existe un miembro con el email: " + request.email());
+        }
         miembro.setNombre(request.nombre());
         miembro.setRut(request.rut());
         miembro.setEmail(request.email());
@@ -82,6 +93,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional
     public void eliminarMiembro(Long id) {
         log.info("Desactivando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)

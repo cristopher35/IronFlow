@@ -113,5 +113,33 @@ public class MiembroServiceTest {
 
         // THEN
         verify(miembroRepository, times(1)).save(any(Miembro.class));
+        assertEquals("INACTIVO", miembro.getEstado());
+    }
+
+    @Test
+    @DisplayName("No debe permitir actualizar con el RUT de otro miembro")
+    void testActualizarMiembroRutDuplicado() {
+        Miembro miembro = Miembro.builder()
+                .id(1L).nombre("Juan Pérez").rut("12345678-9")
+                .email("juan@gmail.com").telefono("912345678").estado("ACTIVO").build();
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "11111111-1", "juan@gmail.com", "912345678");
+        when(miembroRepository.findById(1L)).thenReturn(Optional.of(miembro));
+        when(miembroRepository.existsByRutAndIdNot("11111111-1", 1L)).thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> miembroService.actualizarMiembro(1L, request));
+        verify(miembroRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("No debe permitir actualizar un miembro inactivo")
+    void testActualizarMiembroInactivo() {
+        Miembro miembro = Miembro.builder()
+                .id(1L).nombre("Juan Pérez").rut("12345678-9")
+                .email("juan@gmail.com").telefono("912345678").estado("INACTIVO").build();
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "12345678-9", "juan@gmail.com", "912345678");
+        when(miembroRepository.findById(1L)).thenReturn(Optional.of(miembro));
+
+        assertThrows(IllegalArgumentException.class, () -> miembroService.actualizarMiembro(1L, request));
+        verify(miembroRepository, never()).save(any());
     }
 }
