@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import java.util.NoSuchElementException;
 
 import java.util.List;
 import java.util.Optional;
@@ -113,5 +114,51 @@ public class MiembroServiceTest {
 
         // THEN
         verify(miembroRepository, times(1)).save(any(Miembro.class));
+    }
+    @Test
+    @DisplayName("Debe lanzar excepción si el email ya existe")
+    public void testCrearMiembroEmailDuplicado() {
+        // GIVEN
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "12345678-9", "juan@gmail.com", "912345678");
+        when(miembroRepository.existsByRut("12345678-9")).thenReturn(false);
+        when(miembroRepository.existsByEmail("juan@gmail.com")).thenReturn(true);
+
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () -> miembroService.crearMiembro(request));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción al actualizar un miembro que no existe")
+    public void testActualizarMiembroNoEncontrado() {
+        // GIVEN
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "12345678-9", "juan@gmail.com", "912345678");
+        when(miembroRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // WHEN / THEN
+        assertThrows(NoSuchElementException.class, () -> miembroService.actualizarMiembro(99L, request));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción al actualizar un miembro INACTIVO")
+    public void testActualizarMiembroInactivo() {
+        // GIVEN
+        Miembro miembro = Miembro.builder()
+                .id(1L).nombre("Juan Pérez").rut("12345678-9")
+                .email("juan@gmail.com").telefono("912345678").estado("INACTIVO").build();
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "12345678-9", "juan@gmail.com", "912345678");
+        when(miembroRepository.findById(1L)).thenReturn(Optional.of(miembro));
+
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () -> miembroService.actualizarMiembro(1L, request));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción al eliminar un miembro que no existe")
+    public void testEliminarMiembroNoEncontrado() {
+        // GIVEN
+        when(miembroRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // WHEN / THEN
+        assertThrows(NoSuchElementException.class, () -> miembroService.eliminarMiembro(99L));
     }
 }
