@@ -161,4 +161,34 @@ public class MiembroServiceTest {
         // WHEN / THEN
         assertThrows(NoSuchElementException.class, () -> miembroService.eliminarMiembro(99L));
     }
+    @Test
+    @DisplayName("Debe lanzar excepción al actualizar con un RUT que ya pertenece a otro miembro")
+    public void testActualizarMiembroRutDuplicado() {
+        // GIVEN
+        Miembro miembro = Miembro.builder()
+                .id(1L).nombre("Juan Pérez").rut("12345678-9")
+                .email("juan@gmail.com").telefono("912345678").estado("ACTIVO").build();
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "98765432-1", "juan@gmail.com", "912345678");
+        when(miembroRepository.findById(1L)).thenReturn(Optional.of(miembro));
+        when(miembroRepository.existsByRutAndIdNot("98765432-1", 1L)).thenReturn(true);
+
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () -> miembroService.actualizarMiembro(1L, request));
+    }
+
+    @Test
+    @DisplayName("Debe lanzar excepción al actualizar con un email que ya pertenece a otro miembro")
+    public void testActualizarMiembroEmailDuplicado() {
+        // GIVEN
+        Miembro miembro = Miembro.builder()
+                .id(1L).nombre("Juan Pérez").rut("12345678-9")
+                .email("juan@gmail.com").telefono("912345678").estado("ACTIVO").build();
+        MiembroRequest request = new MiembroRequest("Juan Pérez", "12345678-9", "otro@gmail.com", "912345678");
+        when(miembroRepository.findById(1L)).thenReturn(Optional.of(miembro));
+        when(miembroRepository.existsByRutAndIdNot("12345678-9", 1L)).thenReturn(false);
+        when(miembroRepository.existsByEmailAndIdNot("otro@gmail.com", 1L)).thenReturn(true);
+
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () -> miembroService.actualizarMiembro(1L, request));
+    }
 }

@@ -72,6 +72,14 @@ public class MiembroServiceImpl implements MiembroService {
             log.warn("Intento de actualizar miembro INACTIVO con id: {}", id);
             throw new IllegalArgumentException("No se puede actualizar un miembro INACTIVO");
         }
+        if (miembroRepository.existsByRutAndIdNot(request.rut(), id)) {
+            log.warn("El RUT {} ya pertenece a otro miembro", request.rut());
+            throw new IllegalArgumentException("Ya existe un miembro con el RUT: " + request.rut());
+        }
+        if (miembroRepository.existsByEmailAndIdNot(request.email(), id)) {
+            log.warn("El email {} ya pertenece a otro miembro", request.email());
+            throw new IllegalArgumentException("Ya existe un miembro con el email: " + request.email());
+        }
         miembro.setNombre(request.nombre());
         miembro.setRut(request.rut());
         miembro.setEmail(request.email());
