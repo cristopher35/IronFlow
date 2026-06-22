@@ -7,8 +7,7 @@ import org.springframework.web.client.RestTemplate;
 public class MemberClient {
 
     private final RestTemplate restTemplate;
-    private static final String MEMBER_SERVICE_URL = "http://localhost:8081/member-app";
-
+    private static final String MEMBER_SERVICE_URL = "http://localhost:8081";
     public MemberClient() {
         this.restTemplate = new RestTemplate();
     }
