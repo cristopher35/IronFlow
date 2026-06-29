@@ -1,5 +1,6 @@
 package cl.duocuc.crmenesesn.paymentservice.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -7,14 +8,16 @@ import org.springframework.web.client.RestTemplate;
 public class MembershipClient {
 
     private final RestTemplate restTemplate;
-    private static final String MEMBERSHIP_SERVICE_URL = "http://localhost:8082";
+
+    @Value("${membership.service.url:http://localhost:8082}")
+    private String membershipServiceUrl;
 
     public MembershipClient() {
         this.restTemplate = new RestTemplate();
     }
 
     public Object getPlanMiembroByMiembroId(Long miembroId) {
-        String url = MEMBERSHIP_SERVICE_URL + "/api/planes-miembros/miembro/" + miembroId;
+        String url = membershipServiceUrl + "/api/planes-miembros/miembro/" + miembroId;
         return restTemplate.getForObject(url, Object.class);
     }
 }
