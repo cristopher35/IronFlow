@@ -208,3 +208,55 @@ Cada microservicio soporta 3 perfiles de base de datos:
 ## 📄 Licencia
 
 Este proyecto es de uso académico y fue desarrollado para fines educativos en el contexto de la asignatura DSY1103 de Duoc UC.
+
+---
+
+## API Gateway
+
+El Gateway centraliza las rutas en `http://localhost:8080` y conserva el context-path de cada servicio:
+
+| Ruta pública | Destino local |
+|---|---|
+| `/member-app/**` | `member-service:8081` |
+| `/membership-app/**` | `membership-service:8082` |
+| `/payment-app/**` | `payment-service:8083` |
+| `/class-app/**` | `class-service:8084` |
+| `/booking-app/**` | `booking-service:8085` |
+| `/trainer-app/**` | `trainer-service:8086` |
+| `/access-app/**` | `access-service:8087` |
+| `/equipment-app/**` | `equipment-service:8088` |
+| `/branch-app/**` | `branch-service:8089` |
+| `/notification-app/**` | `notification-service:8090` |
+
+Las URL de destino se pueden reemplazar con variables de entorno como `MEMBER_SERVICE_URL`, `CLASS_SERVICE_URL` y `TRAINER_SERVICE_URL`. El Gateway agrega el encabezado `X-IronFlow-Gateway` y expone `/actuator/health`.
+
+## Swagger / OpenAPI
+
+Con los servicios ejecutándose, las interfaces principales quedan disponibles directamente o a través del Gateway:
+
+| Servicio | Swagger directo | Swagger mediante Gateway |
+|---|---|---|
+| Miembros | `http://localhost:8081/member-app/swagger-ui/index.html` | `http://localhost:8080/member-app/swagger-ui/index.html` |
+| Clases | `http://localhost:8084/class-app/swagger-ui/index.html` | `http://localhost:8080/class-app/swagger-ui/index.html` |
+| Entrenadores | `http://localhost:8086/trainer-app/swagger-ui/index.html` | `http://localhost:8080/trainer-app/swagger-ui/index.html` |
+| Equipos | `http://localhost:8088/equipment-app/swagger-ui/index.html` | `http://localhost:8080/equipment-app/swagger-ui/index.html` |
+| Notificaciones | `http://localhost:8090/notification-app/swagger-ui/index.html` | `http://localhost:8080/notification-app/swagger-ui/index.html` |
+
+La especificación JSON de cada servicio se encuentra en `<context-path>/v3/api-docs`.
+
+## Ejecución con Docker
+
+El archivo `docker-compose.yml` inicia los cinco servicios de este módulo y el API Gateway con perfil H2:
+
+```bash
+docker compose up --build
+docker compose down
+```
+
+Para ejecutar todos los servicios desde el IDE, se deben iniciar los puertos 8081 a 8090 y luego el Gateway en 8080. Los clientes de `class-service` y `notification-service` usan WebClient, timeout de cinco segundos y distinguen recursos inexistentes de fallas del servicio remoto.
+
+## Preparación para despliegue remoto
+
+Cada uno de los cinco servicios y el Gateway incluye un `Dockerfile` multi-stage con Java 21. Todos aceptan `PORT`, y las conexiones entre servicios se configuran mediante variables de entorno. Para persistencia remota debe activarse el perfil `supabase` y definir `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD` de forma segura en Railway, Render o la plataforma escogida. H2 es apropiado para defensa local, pero no para datos persistentes en producción.
+
+El despliegue efectivo requiere crear los servicios en la plataforma, cargar esas variables y reemplazar las URL del Gateway por las URL privadas o públicas asignadas. Las credenciales no se almacenan en Git.

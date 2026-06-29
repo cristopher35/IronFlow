@@ -11,6 +11,7 @@ import cl.duocuc.crmenesesn.classservice.repository.TipoClaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,6 +26,7 @@ public class HorarioServiceImpl implements HorarioService {
     private final TrainerClient trainerClient;
 
     @Override
+    @Transactional
     public HorarioResponse crearHorario(HorarioRequest request) {
         log.info("Creando horario para tipo de clase id: {}", request.tipoClaseId());
 
@@ -40,11 +42,10 @@ public class HorarioServiceImpl implements HorarioService {
         }
 
         // Validar que el entrenador existe en trainer-service
-        try {
-            trainerClient.getTrainerById(request.entrenadorId());
-        } catch (Exception e) {
-            log.warn("Entrenador no encontrado con id: {}", request.entrenadorId());
-            throw new NoSuchElementException("No existe un entrenador con id: " + request.entrenadorId());
+        validarEntrenador(request.entrenadorId());
+        if (horarioRepository.existsByEntrenadorIdAndFechaHoraAndEstado(
+                request.entrenadorId(), request.fechaHora(), "ACTIVO")) {
+            throw new IllegalArgumentException("El entrenador ya tiene un horario activo en esa fecha y hora");
         }
 
         Horario horario = Horario.builder()
@@ -60,6 +61,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HorarioResponse obtenerHorarioPorId(Long id) {
         log.info("Buscando horario con id: {}", id);
         Horario horario = horarioRepository.findById(id)
@@ -71,6 +73,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HorarioResponse> obtenerTodosLosHorarios() {
         log.info("Obteniendo todos los horarios");
         return horarioRepository.findAll()
@@ -80,6 +83,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HorarioResponse> obtenerHorariosPorTipoClase(Long tipoClaseId) {
         log.info("Obteniendo horarios del tipo de clase id: {}", tipoClaseId);
         return horarioRepository.findByTipoClaseId(tipoClaseId)
@@ -89,6 +93,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HorarioResponse> obtenerHorariosPorEntrenador(Long entrenadorId) {
         log.info("Obteniendo horarios del entrenador id: {}", entrenadorId);
         return horarioRepository.findByEntrenadorId(entrenadorId)
@@ -98,6 +103,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional
     public HorarioResponse actualizarHorario(Long id, HorarioRequest request) {
         log.info("Actualizando horario con id: {}", id);
         Horario horario = horarioRepository.findById(id)
@@ -113,6 +119,18 @@ public class HorarioServiceImpl implements HorarioService {
         TipoClase tipoClase = tipoClaseRepository.findById(request.tipoClaseId())
                 .orElseThrow(() -> new NoSuchElementException("Tipo de clase no encontrado con id: " + request.tipoClaseId()));
 
+        if ("INACTIVO".equals(tipoClase.getEstado())) {
+            throw new IllegalArgumentException("No se puede asignar un tipo de clase INACTIVO");
+        }
+        if (request.aforoMax() < horario.getAforoActual()) {
+            throw new IllegalArgumentException("El aforo máximo no puede ser menor al aforo actual");
+        }
+        validarEntrenador(request.entrenadorId());
+        if (horarioRepository.existsByEntrenadorIdAndFechaHoraAndEstadoAndIdNot(
+                request.entrenadorId(), request.fechaHora(), "ACTIVO", id)) {
+            throw new IllegalArgumentException("El entrenador ya tiene un horario activo en esa fecha y hora");
+        }
+
         horario.setTipoClase(tipoClase);
         horario.setEntrenadorId(request.entrenadorId());
         horario.setFechaHora(request.fechaHora());
@@ -123,6 +141,7 @@ public class HorarioServiceImpl implements HorarioService {
     }
 
     @Override
+    @Transactional
     public void eliminarHorario(Long id) {
         log.info("Desactivando horario con id: {}", id);
         Horario horario = horarioRepository.findById(id)
@@ -133,6 +152,20 @@ public class HorarioServiceImpl implements HorarioService {
         horario.setEstado("INACTIVO");
         horarioRepository.save(horario);
         log.info("Horario desactivado con id: {}", id);
+    }
+
+    private void validarEntrenador(Long entrenadorId) {
+        try {
+            Object entrenador = trainerClient.getTrainerById(entrenadorId);
+            if (entrenador == null) {
+                throw new NoSuchElementException("No existe un entrenador con id: " + entrenadorId);
+            }
+        } catch (NoSuchElementException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            log.error("No fue posible comunicarse con trainer-service para validar el id: {}", entrenadorId, ex);
+            throw new IllegalStateException("No fue posible validar el entrenador porque trainer-service no está disponible");
+        }
     }
 
     private HorarioResponse toResponse(Horario horario) {

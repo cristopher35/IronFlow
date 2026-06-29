@@ -17,15 +17,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/notificaciones")
 @RequiredArgsConstructor
+@Tag(name = "Notificaciones", description = "Registro y consulta de notificaciones")
 public class NotificacionController {
 
     private final NotificacionService notificacionService;
 
     @PostMapping
+    @Operation(summary = "Crear notificación", description = "Valida el miembro remoto y retorna 201, 400 o 404")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Notificación creada"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "404", description = "Miembro no encontrado"), @ApiResponse(responseCode = "500", description = "member-service no disponible")})
     public ResponseEntity<NotificacionResponse> crearNotificacion(@Valid @RequestBody NotificacionRequest request) {
         NotificacionResponse respuesta = notificacionService.crearNotificacion(request);
 
@@ -38,22 +45,34 @@ public class NotificacionController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar notificaciones")
     public ResponseEntity<List<NotificacionResponse>> listarNotificaciones() {
         return ResponseEntity.ok(notificacionService.listarNotificaciones());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar notificación por ID", description = "Retorna 200 o 404")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Notificación encontrada"), @ApiResponse(responseCode = "404", description = "Notificación no encontrada")})
     public ResponseEntity<NotificacionResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(notificacionService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar notificación")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Notificación actualizada"), @ApiResponse(responseCode = "400", description = "Datos inválidos"), @ApiResponse(responseCode = "404", description = "Notificación o miembro no encontrado")})
     public ResponseEntity<NotificacionResponse> actualizarNotificacion(@PathVariable Long id, @Valid @RequestBody NotificacionRequest request) {
         return ResponseEntity.ok(notificacionService.actualizarNotificacion(id, request));
     }
 
     @GetMapping("/canal/{canal}")
+    @Operation(summary = "Listar notificaciones por canal")
     public ResponseEntity<List<NotificacionResponse>> listarPorCanal(@PathVariable String canal) {
         return ResponseEntity.ok(notificacionService.listarPorCanal(canal));
+    }
+
+    @GetMapping("/miembro/{miembroId}")
+    @Operation(summary = "Listar notificaciones por miembro")
+    public ResponseEntity<List<NotificacionResponse>> listarPorMiembro(@PathVariable Long miembroId) {
+        return ResponseEntity.ok(notificacionService.listarPorMiembro(miembroId));
     }
 }

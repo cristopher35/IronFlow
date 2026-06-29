@@ -47,6 +47,76 @@ services:
     networks:
       - ironflow-net
 
+  class-service:
+    build: ./class-service/class-service
+    container_name: class-service
+    depends_on:
+      - trainer-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+      TRAINER_SERVICE_URL: http://trainer-service:8086/trainer-app
+    ports:
+      - "8084:8084"
+    networks:
+      - ironflow-net
+
+  trainer-service:
+    build: ./trainer-service/trainer-service
+    container_name: trainer-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+    ports:
+      - "8086:8086"
+    networks:
+      - ironflow-net
+
+  equipment-service:
+    build: ./equipment-service/equipment-service/equipment-service
+    container_name: equipment-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+    ports:
+      - "8088:8088"
+    networks:
+      - ironflow-net
+
+  notification-service:
+    build: ./notification-service/notification-service
+    container_name: notification-service
+    depends_on:
+      - member-service
+    environment:
+      SPRING_PROFILES_ACTIVE: h2
+      MEMBER_SERVICE_URL: http://member-service:8081/member-app
+    ports:
+      - "8090:8090"
+    networks:
+      - ironflow-net
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - member-service
+      - membership-service
+      - payment-service
+      - class-service
+      - trainer-service
+      - equipment-service
+      - notification-service
+    environment:
+      MEMBER_SERVICE_URL: http://member-service:8081
+      MEMBERSHIP_SERVICE_URL: http://membership-service:8082
+      PAYMENT_SERVICE_URL: http://payment-service:8083
+      CLASS_SERVICE_URL: http://class-service:8084
+      TRAINER_SERVICE_URL: http://trainer-service:8086
+      EQUIPMENT_SERVICE_URL: http://equipment-service:8088
+      NOTIFICATION_SERVICE_URL: http://notification-service:8090
+    ports:
+      - "8080:8080"
+    networks:
+      - ironflow-net
+
 networks:
   ironflow-net:
     driver: bridge

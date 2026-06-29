@@ -23,7 +23,7 @@ public class TipoClaseServiceImpl implements TipoClaseService {
     @Override
     public TipoClaseResponse crearTipoClase(TipoClaseRequest request) {
         log.info("Creando tipo de clase con nombre: {}", request.nombre());
-        if (tipoClaseRepository.existsByNombre(request.nombre())) {
+        if (tipoClaseRepository.existsByNombreIgnoreCase(request.nombre())) {
             log.warn("Ya existe un tipo de clase con nombre: {}", request.nombre());
             throw new IllegalArgumentException("Ya existe un tipo de clase con el nombre: " + request.nombre());
         }
@@ -67,6 +67,9 @@ public class TipoClaseServiceImpl implements TipoClaseService {
         if (tipoClase.getEstado().equals("INACTIVO")) {
             log.warn("Intento de actualizar tipo de clase INACTIVO con id: {}", id);
             throw new IllegalArgumentException("No se puede actualizar un tipo de clase INACTIVO");
+        }
+        if (tipoClaseRepository.existsByNombreIgnoreCaseAndIdNot(request.nombre(), id)) {
+            throw new IllegalArgumentException("Ya existe un tipo de clase con el nombre: " + request.nombre());
         }
         tipoClase.setNombre(request.nombre());
         tipoClase.setDescripcion(request.descripcion());

@@ -1,8 +1,16 @@
 spring:
   application:
     name: notification-service
+  profiles:
+    default: h2
+  jpa:
+    open-in-view: false
+
+services:
+  member:
+    base-url: ${MEMBER_SERVICE_URL:http://localhost:8081/member-app}
 
 server:
-  port: 8090
+  port: ${PORT:8090}
   servlet:
     context-path: /notification-app

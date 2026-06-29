@@ -11,33 +11,39 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-@Tag(name = "Miembros V1", description = "Operaciones CRUD básicas sobre miembros del gimnasio")
+@Tag(name = "Miembros", description = "Gestión de miembros del gimnasio")
 public class MiembroController {
 
     private final MiembroService miembroService;
 
     @PostMapping
-    @Operation(summary = "Crear un nuevo miembro", description = "Registra un nuevo miembro en el sistema validando que el RUT y el email sean únicos")
-    @ApiResponses(value = {
+    @Operation(summary = "Crear miembro", description = "Registra un nuevo miembro validando que el RUT y el email sean únicos")
+    @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Miembro creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos en la solicitud"),
-            @ApiResponse(responseCode = "409", description = "RUT o email ya registrado")
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "409", description = "RUT o email duplicado")
     })
     public ResponseEntity<MiembroResponse> crearMiembro(@Valid @RequestBody MiembroRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(miembroService.crearMiembro(request));
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener miembro por ID", description = "Retorna los datos de un miembro específico según su identificador")
-    @ApiResponses(value = {
+    @Operation(summary = "Buscar miembro por ID")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Miembro encontrado"),
             @ApiResponse(responseCode = "404", description = "Miembro no encontrado")
     })
@@ -46,8 +52,8 @@ public class MiembroController {
     }
 
     @GetMapping
-    @Operation(summary = "Listar todos los miembros", description = "Retorna la lista completa de miembros registrados en el sistema")
-    @ApiResponses(value = {
+    @Operation(summary = "Listar miembros")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado obtenido exitosamente")
     })
     public ResponseEntity<List<MiembroResponse>> obtenerTodosLosMiembros() {
@@ -55,26 +61,25 @@ public class MiembroController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar un miembro existente", description = "Actualiza los datos de un miembro. No permite actualizar miembros con estado INACTIVO")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Miembro actualizado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "El miembro está INACTIVO y no puede ser actualizado"),
+    @Operation(summary = "Actualizar miembro", description = "Actualiza datos del miembro y evita modificar miembros inactivos o duplicar RUT/email")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Miembro actualizado"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o miembro inactivo"),
             @ApiResponse(responseCode = "404", description = "Miembro no encontrado"),
-            @ApiResponse(responseCode = "409", description = "RUT o email ya registrado por otro miembro")
+            @ApiResponse(responseCode = "409", description = "RUT o email duplicado")
     })
     public ResponseEntity<MiembroResponse> actualizarMiembro(@PathVariable Long id, @Valid @RequestBody MiembroRequest request) {
         return ResponseEntity.ok(miembroService.actualizarMiembro(id, request));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Eliminar un miembro", description = "Elimina un miembro del sistema según su identificador")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Miembro eliminado exitosamente"),
+    @Operation(summary = "Desactivar miembro", description = "Realiza baja lógica y retorna 204")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Miembro desactivado"),
             @ApiResponse(responseCode = "404", description = "Miembro no encontrado")
     })
     public ResponseEntity<Void> eliminarMiembro(@PathVariable Long id) {
         miembroService.eliminarMiembro(id);
         return ResponseEntity.noContent().build();
     }
-
 }

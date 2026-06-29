@@ -22,11 +22,12 @@ public class EquipoService {
     @Transactional
     public EquipoResponse crearEquipo(EquipoRequest request) {
         log.info("Registrando equipo: {}", request.getNombre());
+        validarConsistencia(request);
 
         Equipo equipo = Equipo.builder()
                 .nombre(request.getNombre())
                 .categoria(request.getCategoria())
-                .estado(request.getEstado())
+                .estado(request.getEstado().toUpperCase())
                 .ubicacion(request.getUbicacion())
                 .cantidadDisponible(request.getCantidadDisponible())
                 .mantenimientoRequerido(request.getMantenimientoRequerido())
@@ -59,9 +60,14 @@ public class EquipoService {
         Equipo equipo = equipoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNoEncontradoException("No existe un equipo con id " + id));
 
+        if ("INACTIVO".equals(equipo.getEstado())) {
+            throw new IllegalArgumentException("No se puede actualizar un equipo INACTIVO");
+        }
+        validarConsistencia(request);
+
         equipo.setNombre(request.getNombre());
         equipo.setCategoria(request.getCategoria());
-        equipo.setEstado(request.getEstado());
+        equipo.setEstado(request.getEstado().toUpperCase());
         equipo.setUbicacion(request.getUbicacion());
         equipo.setCantidadDisponible(request.getCantidadDisponible());
         equipo.setMantenimientoRequerido(request.getMantenimientoRequerido());
@@ -78,6 +84,30 @@ public class EquipoService {
                 .stream()
                 .map(this::mapearRespuesta)
                 .toList();
+    }
+
+    @Transactional
+    public void eliminarEquipo(Long id) {
+        Equipo equipo = equipoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("No existe un equipo con id " + id));
+        equipo.setEstado("INACTIVO");
+        equipo.setCantidadDisponible(0);
+        equipoRepository.save(equipo);
+        log.info("Equipo desactivado con ID: {}", id);
+    }
+
+    private void validarConsistencia(EquipoRequest request) {
+        String estado = request.getEstado().toUpperCase();
+        if (("MANTENCION".equals(estado) || "INACTIVO".equals(estado))
+                && request.getCantidadDisponible() > 0) {
+            throw new IllegalArgumentException("Un equipo en mantención o inactivo no puede tener stock disponible");
+        }
+        if ("MANTENCION".equals(estado) && !request.getMantenimientoRequerido()) {
+            throw new IllegalArgumentException("El estado MANTENCION requiere marcar mantenimientoRequerido");
+        }
+        if ("DISPONIBLE".equals(estado) && request.getMantenimientoRequerido()) {
+            throw new IllegalArgumentException("Un equipo DISPONIBLE no puede requerir mantenimiento");
+        }
     }
 
     private EquipoResponse mapearRespuesta(Equipo equipo) {

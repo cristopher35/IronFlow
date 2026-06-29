@@ -7,6 +7,7 @@ import cl.duocuc.crmenesesn.ironflow.repository.MiembroRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ public class MiembroServiceImpl implements MiembroService {
     private final MiembroRepository miembroRepository;
 
     @Override
+    @Transactional
     public MiembroResponse crearMiembro(MiembroRequest request) {
         log.info("Creando miembro con RUT: {}", request.rut());
         if (miembroRepository.existsByRut(request.rut())) {
@@ -41,6 +43,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public MiembroResponse obtenerMiembroPorId(Long id) {
         log.info("Buscando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)
@@ -52,6 +55,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<MiembroResponse> obtenerTodosLosMiembros() {
         log.info("Obteniendo todos los miembros");
         return miembroRepository.findAll()
@@ -61,6 +65,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional
     public MiembroResponse actualizarMiembro(Long id, MiembroRequest request) {
         log.info("Actualizando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)
@@ -90,6 +95,7 @@ public class MiembroServiceImpl implements MiembroService {
     }
 
     @Override
+    @Transactional
     public void eliminarMiembro(Long id) {
         log.info("Desactivando miembro con id: {}", id);
         Miembro miembro = miembroRepository.findById(id)
