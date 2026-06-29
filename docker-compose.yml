@@ -14,7 +14,7 @@ services:
       - ironflow-net
 
   membership-service:
-    build: ./MemberShip-service/MemberShip-service/MemberShip-service
+    build: ./MemberShip-service
     container_name: membership-service
     depends_on:
       - member-service
@@ -31,7 +31,7 @@ services:
       - ironflow-net
 
   payment-service:
-    build: ./Payment-service/Payment-service/payment-service
+    build: ./Payment-service
     container_name: payment-service
     depends_on:
       - membership-service

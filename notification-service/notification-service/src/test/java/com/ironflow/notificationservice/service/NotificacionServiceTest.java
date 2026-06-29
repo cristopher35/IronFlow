@@ -6,6 +6,7 @@ import com.ironflow.notificationservice.dto.NotificacionResponse;
 import com.ironflow.notificationservice.exception.RecursoNoEncontradoException;
 import com.ironflow.notificationservice.model.Notificacion;
 import com.ironflow.notificationservice.repository.NotificacionRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ class NotificacionServiceTest {
     @InjectMocks NotificacionService service;
 
     @Test
+    @DisplayName("Debe crear notificación normalizando estado y canal")
     void creaNotificacionYNormalizaEstadoYCanal() {
         when(memberClient.getMemberById(1L)).thenReturn(new Object());
         when(repository.save(any())).thenAnswer(invocation -> {
@@ -41,6 +43,7 @@ class NotificacionServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar creación si el miembro no existe")
     void rechazaMiembroInexistente() {
         when(memberClient.getMemberById(2L)).thenReturn(null);
 
@@ -49,6 +52,7 @@ class NotificacionServiceTest {
     }
 
     @Test
+    @DisplayName("Debe actualizar conservando fecha de envío y revalidando miembro")
     void actualizarConservaFechaDeEnvioYRevalidaMiembro() {
         LocalDateTime fecha = LocalDateTime.now().minusDays(1);
         Notificacion actual = Notificacion.builder().id(1L).miembroId(1L).canal("SMS")

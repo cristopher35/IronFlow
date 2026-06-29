@@ -4,6 +4,7 @@ import com.ironflow.trainerservice.dto.EntrenadorRequest;
 import com.ironflow.trainerservice.dto.EntrenadorResponse;
 import com.ironflow.trainerservice.model.Entrenador;
 import com.ironflow.trainerservice.repository.EntrenadorRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ class EntrenadorServiceTest {
     private EntrenadorService service;
 
     @Test
+    @DisplayName("Debe crear entrenador con estado normalizado")
     void creaEntrenadorConEstadoNormalizado() {
         EntrenadorRequest request = request("activo", "trainer@ironflow.cl");
         when(repository.save(any())).thenAnswer(invocation -> {
@@ -41,6 +43,7 @@ class EntrenadorServiceTest {
     }
 
     @Test
+    @DisplayName("Debe listar solo entrenadores activos")
     void listaSoloEntrenadoresActivos() {
         when(repository.findByActivoTrue()).thenReturn(List.of(entrenador("ACTIVO", true)));
 
@@ -52,6 +55,7 @@ class EntrenadorServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar correo duplicado al actualizar entrenador")
     void rechazaCorreoDuplicadoAlActualizar() {
         when(repository.findById(1L)).thenReturn(Optional.of(entrenador("ACTIVO", true)));
         when(repository.existsByCorreoIgnoreCaseAndIdNot("otro@ironflow.cl", 1L)).thenReturn(true);
@@ -62,6 +66,7 @@ class EntrenadorServiceTest {
     }
 
     @Test
+    @DisplayName("Debe eliminar entrenador mediante baja lógica")
     void eliminaEntrenadorMedianteBajaLogica() {
         Entrenador entrenador = entrenador("ACTIVO", true);
         when(repository.findById(1L)).thenReturn(Optional.of(entrenador));

@@ -4,6 +4,7 @@ import com.ironflow.equipmentservice.dto.EquipoRequest;
 import com.ironflow.equipmentservice.dto.EquipoResponse;
 import com.ironflow.equipmentservice.model.Equipo;
 import com.ironflow.equipmentservice.repository.EquipoRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ class EquipoServiceTest {
     @InjectMocks EquipoService service;
 
     @Test
+    @DisplayName("Debe crear equipo con estado normalizado")
     void creaEquipoConEstadoNormalizado() {
         when(repository.save(any())).thenAnswer(invocation -> {
             Equipo equipo = invocation.getArgument(0);
@@ -34,6 +36,7 @@ class EquipoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar stock disponible durante mantención")
     void rechazaStockDisponibleDuranteMantencion() {
         assertThrows(IllegalArgumentException.class,
                 () -> service.crearEquipo(request("MANTENCION", 1, true)));
@@ -41,6 +44,7 @@ class EquipoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar actualización de equipo inactivo")
     void rechazaActualizarEquipoInactivo() {
         Equipo equipo = equipo("INACTIVO", 0, false);
         when(repository.findById(1L)).thenReturn(Optional.of(equipo));
@@ -51,6 +55,7 @@ class EquipoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe dejar stock en cero al realizar baja lógica")
     void bajaLogicaPoneStockEnCero() {
         Equipo equipo = equipo("DISPONIBLE", 4, false);
         when(repository.findById(1L)).thenReturn(Optional.of(equipo));

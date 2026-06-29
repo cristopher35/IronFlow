@@ -6,6 +6,7 @@ import cl.duocuc.crmenesesn.classservice.model.Horario;
 import cl.duocuc.crmenesesn.classservice.model.TipoClase;
 import cl.duocuc.crmenesesn.classservice.repository.HorarioRepository;
 import cl.duocuc.crmenesesn.classservice.repository.TipoClaseRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ class HorarioServiceImplTest {
     @InjectMocks HorarioServiceImpl service;
 
     @Test
+    @DisplayName("Debe rechazar creación de horario con clase inactiva")
     void rechazaClaseInactivaAlCrear() {
         TipoClase tipo = TipoClase.builder().id(1L).nombre("Yoga").estado("INACTIVO").build();
         when(tipoClaseRepository.findById(1L)).thenReturn(Optional.of(tipo));
@@ -35,6 +37,7 @@ class HorarioServiceImplTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar horario por conflicto de entrenador")
     void rechazaConflictoDeEntrenador() {
         TipoClase tipo = TipoClase.builder().id(1L).nombre("Yoga").estado("ACTIVO").build();
         HorarioRequest request = request();
@@ -48,6 +51,7 @@ class HorarioServiceImplTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar reducir aforo por debajo de reservas actuales")
     void rechazaReducirAforoPorDebajoDeReservas() {
         TipoClase tipo = TipoClase.builder().id(1L).nombre("Yoga").estado("ACTIVO").build();
         Horario horario = Horario.builder().id(5L).tipoClase(tipo).entrenadorId(2L)
