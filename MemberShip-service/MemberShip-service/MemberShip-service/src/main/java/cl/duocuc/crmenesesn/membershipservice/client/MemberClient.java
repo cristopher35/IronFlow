@@ -1,5 +1,6 @@
 package cl.duocuc.crmenesesn.membershipservice.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -7,13 +8,16 @@ import org.springframework.web.client.RestTemplate;
 public class MemberClient {
 
     private final RestTemplate restTemplate;
-    private static final String MEMBER_SERVICE_URL = "http://localhost:8081";
+
+    @Value("${member.service.url:http://localhost:8081}")
+    private String memberServiceUrl;
+
     public MemberClient() {
         this.restTemplate = new RestTemplate();
     }
 
     public Object getMemberById(Long id) {
-        String url = MEMBER_SERVICE_URL + "/api/members/" + id;
+        String url = memberServiceUrl + "/api/members/" + id;
         return restTemplate.getForObject(url, Object.class);
     }
 }

@@ -1,0 +1,52 @@
+services:
+  member-service:
+    build: ./memberService/memberService/IronFlow
+    container_name: member-service
+    environment:
+      SPRING_PROFILES_ACTIVE: neon
+      DB_HOST: ${MEMBER_DB_HOST}
+      DB_NAME: ${MEMBER_DB_NAME}
+      DB_USER: ${MEMBER_DB_USER}
+      DB_PASSWORD: ${MEMBER_DB_PASSWORD}
+    ports:
+      - "8081:8081"
+    networks:
+      - ironflow-net
+
+  membership-service:
+    build: ./MemberShip-service/MemberShip-service/MemberShip-service
+    container_name: membership-service
+    depends_on:
+      - member-service
+    environment:
+      SPRING_PROFILES_ACTIVE: neon
+      DB_HOST: ${MEMBERSHIP_DB_HOST}
+      DB_NAME: ${MEMBERSHIP_DB_NAME}
+      DB_USER: ${MEMBERSHIP_DB_USER}
+      DB_PASSWORD: ${MEMBERSHIP_DB_PASSWORD}
+      MEMBER_SERVICE_URL: http://member-service:8081
+    ports:
+      - "8082:8082"
+    networks:
+      - ironflow-net
+
+  payment-service:
+    build: ./Payment-service/Payment-service/payment-service
+    container_name: payment-service
+    depends_on:
+      - membership-service
+    environment:
+      SPRING_PROFILES_ACTIVE: neon
+      DB_HOST: ${PAYMENT_DB_HOST}
+      DB_NAME: ${PAYMENT_DB_NAME}
+      DB_USER: ${PAYMENT_DB_USER}
+      DB_PASSWORD: ${PAYMENT_DB_PASSWORD}
+      MEMBERSHIP_SERVICE_URL: http://membership-service:8082
+    ports:
+      - "8083:8083"
+    networks:
+      - ironflow-net
+
+networks:
+  ironflow-net:
+    driver: bridge
