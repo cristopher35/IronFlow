@@ -1,11 +1,11 @@
 spring:
   application:
-    name: branch-service
+    name: access-service
 
 server:
-  port: 8089
+  port: 8087
   servlet:
-    context-path: /branch-app
+    context-path: /access-app
 
 springdoc:
   swagger-ui:

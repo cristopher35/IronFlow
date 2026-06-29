@@ -3,6 +3,8 @@ package com.ironflow.branchservice.controller;
 import com.ironflow.branchservice.dto.SucursalRequest;
 import com.ironflow.branchservice.dto.SucursalResponse;
 import com.ironflow.branchservice.service.SucursalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sucursales")
 @RequiredArgsConstructor
+@Tag(name = "Sucursales", description = "Gestión de sucursales del gimnasio")
 public class SucursalController {
 
     private final SucursalService sucursalService;
 
     @PostMapping
+    @Operation(summary = "Crear sucursal")
     public ResponseEntity<SucursalResponse> crearSucursal(@Valid @RequestBody SucursalRequest request) {
         SucursalResponse respuesta = sucursalService.crearSucursal(request);
 
@@ -38,21 +42,25 @@ public class SucursalController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar sucursales")
     public ResponseEntity<List<SucursalResponse>> listarSucursales() {
         return ResponseEntity.ok(sucursalService.listarSucursales());
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar sucursal por ID")
     public ResponseEntity<SucursalResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(sucursalService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar sucursal")
     public ResponseEntity<SucursalResponse> actualizarSucursal(@PathVariable Long id, @Valid @RequestBody SucursalRequest request) {
         return ResponseEntity.ok(sucursalService.actualizarSucursal(id, request));
     }
 
     @GetMapping("/ciudad/{ciudad}")
+    @Operation(summary = "Listar sucursales por ciudad")
     public ResponseEntity<List<SucursalResponse>> listarPorCiudad(@PathVariable String ciudad) {
         return ResponseEntity.ok(sucursalService.listarPorCiudad(ciudad));
     }

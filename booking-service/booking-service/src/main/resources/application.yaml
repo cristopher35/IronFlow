@@ -2,7 +2,7 @@ spring:
   application:
     name: booking-service
   profiles:
-    active: h2
+    default: h2
 
 server:
   port: 8085

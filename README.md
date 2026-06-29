@@ -18,7 +18,7 @@ Sistema de gestión integral para gimnasios basado en una **arquitectura de micr
 
 **IronFlow** es una plataforma backend que aborda los principales problemas operativos del gimnasio: gestión de clientes, planes de membresía, pagos, reservas de clases, control de acceso, gestión de entrenadores, equipamiento y notificaciones.
 
-La solución está compuesta por **10 microservicios independientes**, cada uno con su propia base de datos relacional, comunicándose entre sí mediante **API REST** con **RestTemplate**, siguiendo el patrón **CSR (Controller-Service-Repository)**.
+La solución está compuesta por **10 microservicios independientes**, cada uno con su propia base de datos relacional, comunicándose entre sí mediante **API REST** con clientes como **RestTemplate** y **WebClient**, siguiendo el patrón **CSR (Controller-Service-Repository)**.
 
 ---
 
@@ -60,7 +60,7 @@ La solución está compuesta por **10 microservicios independientes**, cada uno 
 | **Spring Boot** | 4.0.5 | Framework principal |
 | **Spring Data JPA + Hibernate** | incluido | ORM y acceso a base de datos |
 | **Spring Web MVC** | incluido | Exposición de endpoints REST |
-| **RestTemplate** | incluido | Comunicación entre microservicios |
+| **RestTemplate / WebClient** | incluido | Comunicación entre microservicios |
 | **Lombok** | incluido | @Slf4j, @RequiredArgsConstructor, @Builder, @Data |
 | **Jakarta Validation** | incluido | @NotBlank, @NotNull, @Positive, @Email, @Pattern |
 | **H2 Database** | incluido | Base de datos en memoria (perfil h2) |
@@ -77,7 +77,7 @@ Cada microservicio sigue el patrón **CSR (Controller-Service-Repository)** con 
 
 ```
 src/main/java/cl.duocuc.crmenesesn.<microservicio>/
-├── client/           → Comunicación con otros microservicios (RestTemplate)
+├── client/           → Comunicación con otros microservicios (RestTemplate o WebClient)
 ├── controller/       → Endpoints REST (@RestController)
 ├── dto/              → Records de Request y Response
 ├── exception/        → GlobalExceptionHandler (@RestControllerAdvice)
@@ -129,8 +129,8 @@ Cada microservicio soporta 3 perfiles de base de datos:
 # MySQL local (requiere XAMPP corriendo)
 .\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mysql
 
-# PostgreSQL con Supabase (requiere variables de entorno DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
-.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=supabase
+# PostgreSQL con Neon (requiere variables de entorno DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD)
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=neon
 ```
 
 ---
@@ -159,7 +159,7 @@ Cada microservicio soporta 3 perfiles de base de datos:
 - ✅ Trazabilidad completa entre capas (operaciones, errores, validaciones fallidas)
 
 ### Comunicación entre Microservicios
-- ✅ Implementada con **RestTemplate** (nativo de Spring Boot)
+- ✅ Implementada con clientes REST como **RestTemplate** y **WebClient**
 - ✅ Manejo de excepciones con try/catch al llamar a servicios externos
 - ✅ Validación de datos recibidos antes de procesar
 
@@ -220,15 +220,15 @@ El Gateway centraliza las rutas en `http://localhost:8080` y conserva el context
 | `/member-app/**` | `member-service:8081` |
 | `/membership-app/**` | `membership-service:8082` |
 | `/payment-app/**` | `payment-service:8083` |
-| `/class-app/**` | `class-service:8084` |
 | `/booking-app/**` | `booking-service:8085` |
+| `/class-app/**` | `class-service:8084` |
 | `/trainer-app/**` | `trainer-service:8086` |
 | `/access-app/**` | `access-service:8087` |
 | `/equipment-app/**` | `equipment-service:8088` |
 | `/branch-app/**` | `branch-service:8089` |
 | `/notification-app/**` | `notification-service:8090` |
 
-Las URL de destino se pueden reemplazar con variables de entorno como `MEMBER_SERVICE_URL`, `CLASS_SERVICE_URL` y `TRAINER_SERVICE_URL`. El Gateway agrega el encabezado `X-IronFlow-Gateway` y expone `/actuator/health`.
+El Gateway agrega el encabezado `X-IronFlow-Gateway` y expone `/actuator/health`.
 
 ## Swagger / OpenAPI
 
@@ -237,26 +237,31 @@ Con los servicios ejecutándose, las interfaces principales quedan disponibles d
 | Servicio | Swagger directo | Swagger mediante Gateway |
 |---|---|---|
 | Miembros | `http://localhost:8081/member-app/swagger-ui/index.html` | `http://localhost:8080/member-app/swagger-ui/index.html` |
+| Membresías | `http://localhost:8082/membership-app/swagger-ui/index.html` | `http://localhost:8080/membership-app/swagger-ui/index.html` |
+| Pagos | `http://localhost:8083/payment-app/swagger-ui/index.html` | `http://localhost:8080/payment-app/swagger-ui/index.html` |
+| Reservas | `http://localhost:8085/booking-app/swagger-ui/index.html` | `http://localhost:8080/booking-app/swagger-ui/index.html` |
 | Clases | `http://localhost:8084/class-app/swagger-ui/index.html` | `http://localhost:8080/class-app/swagger-ui/index.html` |
 | Entrenadores | `http://localhost:8086/trainer-app/swagger-ui/index.html` | `http://localhost:8080/trainer-app/swagger-ui/index.html` |
+| Accesos | `http://localhost:8087/access-app/swagger-ui/index.html` | `http://localhost:8080/access-app/swagger-ui/index.html` |
 | Equipos | `http://localhost:8088/equipment-app/swagger-ui/index.html` | `http://localhost:8080/equipment-app/swagger-ui/index.html` |
+| Sucursales | `http://localhost:8089/branch-app/swagger-ui/index.html` | `http://localhost:8080/branch-app/swagger-ui/index.html` |
 | Notificaciones | `http://localhost:8090/notification-app/swagger-ui/index.html` | `http://localhost:8080/notification-app/swagger-ui/index.html` |
 
 La especificación JSON de cada servicio se encuentra en `<context-path>/v3/api-docs`.
 
 ## Ejecución con Docker
 
-El archivo `docker-compose.yml` inicia los cinco servicios de este módulo y el API Gateway con perfil H2:
+El archivo `docker-compose.yml` inicia los microservicios configurados y el API Gateway. Los servicios que usan bases de datos remotas pueden configurarse con variables de entorno, y los servicios preparados para defensa local usan perfil H2:
 
 ```bash
 docker compose up --build
 docker compose down
 ```
 
-Para ejecutar todos los servicios desde el IDE, se deben iniciar los puertos 8081 a 8090 y luego el Gateway en 8080. Los clientes de `class-service` y `notification-service` usan WebClient, timeout de cinco segundos y distinguen recursos inexistentes de fallas del servicio remoto.
+Para ejecutar todos los servicios desde el IDE, se deben iniciar los puertos 8081 a 8090 y luego el Gateway en 8080. Los clientes de `class-service` y `notification-service` usan WebClient, y `booking-service` y `access-service` reciben sus URLs remotas desde variables de entorno para funcionar correctamente en Docker.
 
 ## Preparación para despliegue remoto
 
-Cada uno de los cinco servicios y el Gateway incluye un `Dockerfile` multi-stage con Java 21. Todos aceptan `PORT`, y las conexiones entre servicios se configuran mediante variables de entorno. Para persistencia remota debe activarse el perfil `supabase` y definir `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD` de forma segura en Railway, Render o la plataforma escogida. H2 es apropiado para defensa local, pero no para datos persistentes en producción.
+Cada microservicio y el Gateway incluye un `Dockerfile` multi-stage con Java 21. Las conexiones entre servicios se configuran mediante variables de entorno. Para persistencia remota debe activarse el perfil `neon` y definir `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD` de forma segura en Railway, Render o la plataforma escogida. En `docker-compose.yml`, los servicios con Neon usan variables separadas por servicio, por ejemplo `BOOKING_DB_HOST`, `EQUIPMENT_DB_HOST`, `TRAINER_DB_HOST`, `ACCESS_DB_HOST`, `BRANCH_DB_HOST` y `NOTIFICATION_DB_HOST`. H2 es apropiado para defensa local, pero no para datos persistentes en producción.
 
 El despliegue efectivo requiere crear los servicios en la plataforma, cargar esas variables y reemplazar las URL del Gateway por las URL privadas o públicas asignadas. Las credenciales no se almacenan en Git.
