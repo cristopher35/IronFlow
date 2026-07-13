@@ -142,6 +142,38 @@ public class HorarioServiceImpl implements HorarioService {
 
     @Override
     @Transactional
+    public HorarioResponse reservarCupo(Long id) {
+        log.info("Reservando cupo para horario con id: {}", id);
+        Horario horario = horarioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Horario no encontrado con id: " + id));
+        if ("INACTIVO".equals(horario.getEstado())) {
+            throw new IllegalArgumentException("No se puede reservar cupo en un horario INACTIVO");
+        }
+        if (horario.getAforoActual() >= horario.getAforoMax()) {
+            throw new IllegalArgumentException("La clase ya está llena");
+        }
+        horario.setAforoActual(horario.getAforoActual() + 1);
+        Horario saved = horarioRepository.save(horario);
+        log.info("Cupo reservado para horario id: {}. Aforo actual: {}/{}", id, saved.getAforoActual(), saved.getAforoMax());
+        return toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public HorarioResponse liberarCupo(Long id) {
+        log.info("Liberando cupo para horario con id: {}", id);
+        Horario horario = horarioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Horario no encontrado con id: " + id));
+        if (horario.getAforoActual() > 0) {
+            horario.setAforoActual(horario.getAforoActual() - 1);
+        }
+        Horario saved = horarioRepository.save(horario);
+        log.info("Cupo liberado para horario id: {}. Aforo actual: {}/{}", id, saved.getAforoActual(), saved.getAforoMax());
+        return toResponse(saved);
+    }
+
+    @Override
+    @Transactional
     public void eliminarHorario(Long id) {
         log.info("Desactivando horario con id: {}", id);
         Horario horario = horarioRepository.findById(id)

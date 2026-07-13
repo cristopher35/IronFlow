@@ -1,0 +1,180 @@
+@gateway = http://localhost:8080
+@member = http://localhost:8081
+@membership = http://localhost:8082
+@payment = http://localhost:8083
+@class = http://localhost:8084
+@booking = http://localhost:8085
+@trainer = http://localhost:8086
+@access = http://localhost:8087
+@equipment = http://localhost:8088
+@branch = http://localhost:8089
+@notification = http://localhost:8090
+
+### Health del Gateway
+GET {{gateway}}/actuator/health
+
+### Swagger de member-service via Gateway
+GET {{gateway}}/member-app/v3/api-docs
+
+### Crear miembro - caso exitoso
+POST {{member}}/api/members
+Content-Type: application/json
+
+{
+  "nombre": "Juan Perez",
+  "rut": "12345678-9",
+  "email": "juan.perez@correo.cl",
+  "telefono": "912345678"
+}
+
+### Crear miembro - validacion fallida
+POST {{member}}/api/members
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "rut": "123",
+  "email": "correo-invalido",
+  "telefono": "abc"
+}
+
+### Listar miembros via Gateway
+GET {{gateway}}/member-app/api/members
+
+### Crear plan
+POST {{membership}}/api/planes
+Content-Type: application/json
+
+{
+  "nombre": "Mensual Full",
+  "precio": 29990,
+  "diasDuracion": 30
+}
+
+### Asignar plan a miembro
+POST {{membership}}/api/planes-miembros
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "planId": 1,
+  "fechaInicio": "2026-07-10"
+}
+
+### Consultar planes por miembro via Gateway
+GET {{gateway}}/membership-app/api/planes-miembros/miembro/1
+
+### Registrar pago
+POST {{payment}}/api/payments
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "monto": 29990,
+  "metodoPago": "TARJETA"
+}
+
+### Registrar pago - metodo invalido
+POST {{payment}}/api/payments
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "monto": 29990,
+  "metodoPago": "BITCOIN"
+}
+
+### Crear entrenador
+POST {{trainer}}/api/entrenadores
+Content-Type: application/json
+
+{
+  "nombre": "Ana Torres",
+  "especialidad": "Entrenamiento funcional",
+  "aniosExperiencia": 5,
+  "telefono": "912345678",
+  "correo": "ana.torres@ironflow.cl",
+  "estado": "ACTIVO"
+}
+
+### Crear tipo de clase
+POST {{class}}/api/classes
+Content-Type: application/json
+
+{
+  "nombre": "Funcional",
+  "descripcion": "Clase grupal de fuerza y movilidad"
+}
+
+### Crear horario
+POST {{class}}/api/schedules
+Content-Type: application/json
+
+{
+  "tipoClaseId": 1,
+  "entrenadorId": 1,
+  "fechaHora": "2026-12-20T18:30:00",
+  "aforoMax": 20
+}
+
+### Crear reserva
+POST {{booking}}/api/bookings
+Content-Type: application/json
+
+{
+  "horarioId": 1,
+  "miembroId": 1
+}
+
+### Cancelar reserva
+DELETE {{booking}}/api/bookings/1
+
+### Verificar acceso
+POST {{access}}/api/accesos/verificar
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "observacion": "Ingreso principal"
+}
+
+### Crear equipo
+POST {{equipment}}/api/equipos
+Content-Type: application/json
+
+{
+  "nombre": "Caminadora Pro",
+  "categoria": "Cardio",
+  "estado": "DISPONIBLE",
+  "ubicacion": "Sala 1",
+  "cantidadDisponible": 4,
+  "mantenimientoRequerido": false
+}
+
+### Crear sucursal
+POST {{branch}}/api/sucursales
+Content-Type: application/json
+
+{
+  "nombre": "IronFlow Centro",
+  "ciudad": "Santiago",
+  "direccion": "Av. Principal 123",
+  "telefono": "229998888",
+  "horarioAtencion": "06:00-23:00",
+  "estado": "ACTIVA"
+}
+
+### Crear notificacion
+POST {{notification}}/api/notificaciones
+Content-Type: application/json
+
+{
+  "miembroId": 1,
+  "canal": "EMAIL",
+  "asunto": "Bienvenido a IronFlow",
+  "mensaje": "Tu inscripcion fue registrada correctamente",
+  "estado": "PENDIENTE"
+}
+
+### Endpoint inexistente - caso 404 esperado
+GET {{gateway}}/member-app/api/members/999999

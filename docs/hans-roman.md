@@ -21,14 +21,6 @@ Responsable de servicios de entrenadores, acceso, sucursales y notificaciones.
 - Registro y consulta de notificaciones.
 - Validacion remota de socio antes de registrar notificaciones.
 
-## Commits relevantes
-
-- `41d3c37` - corrige rutas locales de microservicios.
-- `69bf43d` - estandariza documentacion OpenAPI.
-- `a271496` - agrega gestion del proyecto y ejecucion local.
-- `dfbb1c7` - habilita wrappers Maven locales.
-- `62f5c7a` - estabiliza Mockito en membership y payment.
-
 ## Pruebas asociadas
 
 - `EntrenadorServiceTest`
@@ -56,5 +48,4 @@ La dificultad mas importante fue coordinar validaciones remotas entre servicios 
 - [x] Pruebas unitarias incluidas.
 - [x] Swagger disponible.
 - [x] Dockerfile incluido.
-- [x] Commits locales identificados.
 - [x] Evidencia individual documentada para defensa.

@@ -56,6 +56,7 @@ class ReservaServiceTest {
         assertEquals(10L, response.horarioId());
         assertEquals(1L, response.miembroId());
         assertEquals("ACTIVA", response.estado());
+        verify(classClient).reservarCupo(10L);
         verify(reservaRepository).save(any(Reserva.class));
     }
 
@@ -107,6 +108,22 @@ class ReservaServiceTest {
 
         // When / Then
         assertThrows(IllegalArgumentException.class, () -> reservaService.crearReserva(request));
+        verify(classClient, never()).reservarCupo(anyLong());
+        verify(reservaRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe rechazar reserva cuando class-service informa aforo lleno")
+    void crearReservaAforoLleno() {
+        // Given
+        ReservaRequest request = new ReservaRequest(10L, 1L);
+        when(memberClient.getMemberById(1L)).thenReturn(Map.of("id", 1L));
+        when(classClient.getHorarioById(10L)).thenReturn(Map.of("id", 10L));
+        when(reservaRepository.existsByHorarioIdAndMiembroIdAndEstado(10L, 1L, "ACTIVA")).thenReturn(false);
+        when(classClient.reservarCupo(10L)).thenThrow(new IllegalArgumentException("La clase ya está llena"));
+
+        // When / Then
+        assertThrows(IllegalArgumentException.class, () -> reservaService.crearReserva(request));
         verify(reservaRepository, never()).save(any());
     }
 
@@ -125,6 +142,19 @@ class ReservaServiceTest {
         assertNotNull(response);
         assertEquals("CANCELADA", response.estado());
         verify(reservaRepository).save(reserva);
+        verify(classClient).liberarCupo(10L);
+    }
+
+    @Test
+    @DisplayName("Debe rechazar cancelar una reserva que ya está cancelada")
+    void cancelarReservaYaCancelada() {
+        // Given
+        when(reservaRepository.findById(1L)).thenReturn(Optional.of(reserva(1L, "CANCELADA")));
+
+        // When / Then
+        assertThrows(IllegalArgumentException.class, () -> reservaService.cancelarReserva(1L));
+        verify(reservaRepository, never()).save(any());
+        verify(classClient, never()).liberarCupo(anyLong());
     }
 
     @Test
@@ -155,6 +185,45 @@ class ReservaServiceTest {
     }
 
     @Test
+    @DisplayName("Debe obtener reserva por id")
+    void obtenerReservaPorId() {
+        // Given
+        when(reservaRepository.findById(1L)).thenReturn(Optional.of(reserva(1L, "ACTIVA")));
+
+        // When
+        ReservaResponse response = reservaService.obtenerReservaPorId(1L);
+
+        // Then
+        assertEquals(1L, response.id());
+        assertEquals("ACTIVA", response.estado());
+    }
+
+    @Test
+    @DisplayName("Debe fallar al obtener una reserva inexistente por id")
+    void obtenerReservaPorIdNoEncontrada() {
+        // Given
+        when(reservaRepository.findById(99L)).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThrows(EntityNotFoundException.class, () -> reservaService.obtenerReservaPorId(99L));
+    }
+
+    @Test
+    @DisplayName("Debe listar reservas por horario")
+    void listarReservasPorHorario() {
+        // Given
+        when(reservaRepository.findByHorarioId(10L)).thenReturn(List.of(reserva(1L, "ACTIVA")));
+
+        // When
+        List<ReservaResponse> response = reservaService.obtenerReservasPorHorario(10L);
+
+        // Then
+        assertEquals(1, response.size());
+        assertEquals(10L, response.get(0).horarioId());
+        verify(reservaRepository).findByHorarioId(10L);
+    }
+
+    @Test
     @DisplayName("Debe listar todas las reservas")
     void listarTodasLasReservas() {
         // Given
@@ -167,6 +236,20 @@ class ReservaServiceTest {
         assertNotNull(response);
         assertEquals(2, response.size());
         verify(reservaRepository).findAll();
+    }
+
+    @Test
+    @DisplayName("Debe asignar fecha de reserva antes de persistir")
+    void prePersistReserva() {
+        // Given
+        Reserva reserva = Reserva.builder().horarioId(10L).miembroId(1L).build();
+
+        // When
+        reserva.prePersist();
+
+        // Then
+        assertNotNull(reserva.getFechaReserva());
+        assertEquals("ACTIVA", reserva.getEstado());
     }
 
     private Reserva reserva(Long id, String estado) {

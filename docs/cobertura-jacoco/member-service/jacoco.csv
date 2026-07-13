@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+IronFlow,cl.duocuc.crmenesesn.ironflow.controller,MiembroControllerV2,0,68,0,0,0,10,0,5,0,5
+IronFlow,cl.duocuc.crmenesesn.ironflow.controller,MiembroController,0,33,0,0,0,6,0,5,0,5
+IronFlow,cl.duocuc.crmenesesn.ironflow.assemblers,MiembroModelAssembler,0,33,0,0,0,4,0,2,0,2
+IronFlow,cl.duocuc.crmenesesn.ironflow.config,SwaggerConfig,0,17,0,0,0,6,0,2,0,2
+IronFlow,cl.duocuc.crmenesesn.ironflow.dto,MiembroRequest,0,15,0,0,0,1,0,1,0,1
+IronFlow,cl.duocuc.crmenesesn.ironflow.dto,MiembroResponse,0,21,0,0,0,1,0,1,0,1
+IronFlow,cl.duocuc.crmenesesn.ironflow.service,MiembroServiceImpl,41,231,1,9,9,56,2,13,1,9
+IronFlow,cl.duocuc.crmenesesn.ironflow,DataLoader,0,48,0,2,0,13,0,3,0,2
+IronFlow,cl.duocuc.crmenesesn.ironflow,IronFlowApplication,5,3,0,0,2,1,1,1,1,1
+IronFlow,cl.duocuc.crmenesesn.ironflow.exception,ErrorApi,0,21,0,0,0,1,0,1,0,1
+IronFlow,cl.duocuc.crmenesesn.ironflow.exception,GlobalExceptionHandler,36,66,2,0,6,11,2,6,1,6

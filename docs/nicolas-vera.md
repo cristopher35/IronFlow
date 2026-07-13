@@ -46,4 +46,3 @@ La dificultad mas importante fue coordinar reserva, cupos, cancelacion y entrada
 - [x] Swagger disponible.
 - [x] Dockerfile incluido.
 - [x] Evidencia individual documentada para defensa.
-

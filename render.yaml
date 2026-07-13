@@ -1,0 +1,320 @@
+services:
+  - type: web
+    name: ironflow-discovery-server
+    runtime: java
+    rootDir: discovery-server
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8761
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: EUREKA_INSTANCE_HOSTNAME
+        sync: false
+
+  - type: web
+    name: ironflow-api-gateway
+    runtime: java
+    rootDir: api-gateway
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: MEMBER_SERVICE_URL
+        sync: false
+      - key: MEMBERSHIP_SERVICE_URL
+        sync: false
+      - key: PAYMENT_SERVICE_URL
+        sync: false
+      - key: BOOKING_SERVICE_URL
+        sync: false
+      - key: CLASS_SERVICE_URL
+        sync: false
+      - key: TRAINER_SERVICE_URL
+        sync: false
+      - key: ACCESS_SERVICE_URL
+        sync: false
+      - key: EQUIPMENT_SERVICE_URL
+        sync: false
+      - key: BRANCH_SERVICE_URL
+        sync: false
+      - key: NOTIFICATION_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-member-service
+    runtime: java
+    rootDir: memberService/memberService/IronFlow
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8081
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+  - type: web
+    name: ironflow-membership-service
+    runtime: java
+    rootDir: MemberShip-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8082
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: MEMBER_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-payment-service
+    runtime: java
+    rootDir: Payment-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8083
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: MEMBERSHIP_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-class-service
+    runtime: java
+    rootDir: class-service/class-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8084
+      - key: SERVER_PORT
+        value: 8084
+      - key: SPRING_PROFILES_ACTIVE
+        value: supabase
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: TRAINER_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-booking-service
+    runtime: java
+    rootDir: booking-service/booking-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8085
+      - key: SERVER_PORT
+        value: 8085
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: MEMBER_SERVICE_URL
+        sync: false
+      - key: CLASS_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-trainer-service
+    runtime: java
+    rootDir: trainer-service/trainer-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8086
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+  - type: web
+    name: ironflow-access-service
+    runtime: java
+    rootDir: access-service/access-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8087
+      - key: SERVER_PORT
+        value: 8087
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: MEMBERSHIP_SERVICE_URL
+        sync: false
+
+  - type: web
+    name: ironflow-equipment-service
+    runtime: java
+    rootDir: equipment-service/equipment-service/equipment-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8088
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+  - type: web
+    name: ironflow-branch-service
+    runtime: java
+    rootDir: branch-service/branch-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8089
+      - key: SERVER_PORT
+        value: 8089
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+  - type: web
+    name: ironflow-notification-service
+    runtime: java
+    rootDir: notification-service/notification-service
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 8090
+      - key: SPRING_PROFILES_ACTIVE
+        value: neon
+      - key: EUREKA_DEFAULT_ZONE
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: MEMBER_SERVICE_URL
+        sync: false

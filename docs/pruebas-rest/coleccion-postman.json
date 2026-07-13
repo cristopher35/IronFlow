@@ -1,0 +1,209 @@
+{
+  "info": {
+    "name": "IronFlow - Casos REST",
+    "description": "Coleccion generada desde docs/pruebas-rest/casos-prueba.http.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gateway", "value": "http://localhost:8080" },
+    { "key": "member", "value": "http://localhost:8081" },
+    { "key": "membership", "value": "http://localhost:8082" },
+    { "key": "payment", "value": "http://localhost:8083" },
+    { "key": "class", "value": "http://localhost:8084" },
+    { "key": "booking", "value": "http://localhost:8085" },
+    { "key": "trainer", "value": "http://localhost:8086" },
+    { "key": "access", "value": "http://localhost:8087" },
+    { "key": "equipment", "value": "http://localhost:8088" },
+    { "key": "branch", "value": "http://localhost:8089" },
+    { "key": "notification", "value": "http://localhost:8090" }
+  ],
+  "item": [
+    {
+      "name": "Gateway",
+      "item": [
+        { "name": "Health del Gateway", "request": { "method": "GET", "url": "{{gateway}}/actuator/health" } },
+        { "name": "Swagger de member-service via Gateway", "request": { "method": "GET", "url": "{{gateway}}/member-app/v3/api-docs" } },
+        { "name": "Listar miembros via Gateway", "request": { "method": "GET", "url": "{{gateway}}/member-app/api/members" } },
+        { "name": "Consultar planes por miembro via Gateway", "request": { "method": "GET", "url": "{{gateway}}/membership-app/api/planes-miembros/miembro/1" } },
+        { "name": "Endpoint inexistente - caso 404 esperado", "request": { "method": "GET", "url": "{{gateway}}/member-app/api/members/999999" } }
+      ]
+    },
+    {
+      "name": "member-service",
+      "item": [
+        {
+          "name": "Crear miembro - caso exitoso",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Juan Perez\",\n  \"rut\": \"12345678-9\",\n  \"email\": \"juan.perez@correo.cl\",\n  \"telefono\": \"912345678\"\n}" },
+            "url": "{{member}}/api/members"
+          }
+        },
+        {
+          "name": "Crear miembro - validacion fallida",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"\",\n  \"rut\": \"123\",\n  \"email\": \"correo-invalido\",\n  \"telefono\": \"abc\"\n}" },
+            "url": "{{member}}/api/members"
+          }
+        }
+      ]
+    },
+    {
+      "name": "membership-service",
+      "item": [
+        {
+          "name": "Crear plan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Mensual Full\",\n  \"precio\": 29990,\n  \"diasDuracion\": 30\n}" },
+            "url": "{{membership}}/api/planes"
+          }
+        },
+        {
+          "name": "Asignar plan a miembro",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"miembroId\": 1,\n  \"planId\": 1,\n  \"fechaInicio\": \"2026-07-10\"\n}" },
+            "url": "{{membership}}/api/planes-miembros"
+          }
+        }
+      ]
+    },
+    {
+      "name": "payment-service",
+      "item": [
+        {
+          "name": "Registrar pago",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"miembroId\": 1,\n  \"monto\": 29990,\n  \"metodoPago\": \"TARJETA\"\n}" },
+            "url": "{{payment}}/api/payments"
+          }
+        },
+        {
+          "name": "Registrar pago - metodo invalido",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"miembroId\": 1,\n  \"monto\": 29990,\n  \"metodoPago\": \"BITCOIN\"\n}" },
+            "url": "{{payment}}/api/payments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "trainer-service",
+      "item": [
+        {
+          "name": "Crear entrenador",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Ana Torres\",\n  \"especialidad\": \"Entrenamiento funcional\",\n  \"aniosExperiencia\": 5,\n  \"telefono\": \"912345678\",\n  \"correo\": \"ana.torres@ironflow.cl\",\n  \"estado\": \"ACTIVO\"\n}" },
+            "url": "{{trainer}}/api/entrenadores"
+          }
+        }
+      ]
+    },
+    {
+      "name": "class-service",
+      "item": [
+        {
+          "name": "Crear tipo de clase",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Funcional\",\n  \"descripcion\": \"Clase grupal de fuerza y movilidad\"\n}" },
+            "url": "{{class}}/api/classes"
+          }
+        },
+        {
+          "name": "Crear horario",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"tipoClaseId\": 1,\n  \"entrenadorId\": 1,\n  \"fechaHora\": \"2026-12-20T18:30:00\",\n  \"aforoMax\": 20\n}" },
+            "url": "{{class}}/api/schedules"
+          }
+        }
+      ]
+    },
+    {
+      "name": "booking-service",
+      "item": [
+        {
+          "name": "Crear reserva",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"horarioId\": 1,\n  \"miembroId\": 1\n}" },
+            "url": "{{booking}}/api/bookings"
+          }
+        },
+        { "name": "Cancelar reserva", "request": { "method": "DELETE", "url": "{{booking}}/api/bookings/1" } }
+      ]
+    },
+    {
+      "name": "access-service",
+      "item": [
+        {
+          "name": "Verificar acceso",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"miembroId\": 1,\n  \"observacion\": \"Ingreso principal\"\n}" },
+            "url": "{{access}}/api/accesos/verificar"
+          }
+        }
+      ]
+    },
+    {
+      "name": "equipment-service",
+      "item": [
+        {
+          "name": "Crear equipo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Caminadora Pro\",\n  \"categoria\": \"Cardio\",\n  \"estado\": \"DISPONIBLE\",\n  \"ubicacion\": \"Sala 1\",\n  \"cantidadDisponible\": 4,\n  \"mantenimientoRequerido\": false\n}" },
+            "url": "{{equipment}}/api/equipos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "branch-service",
+      "item": [
+        {
+          "name": "Crear sucursal",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"IronFlow Centro\",\n  \"ciudad\": \"Santiago\",\n  \"direccion\": \"Av. Principal 123\",\n  \"telefono\": \"229998888\",\n  \"horarioAtencion\": \"06:00-23:00\",\n  \"estado\": \"ACTIVA\"\n}" },
+            "url": "{{branch}}/api/sucursales"
+          }
+        }
+      ]
+    },
+    {
+      "name": "notification-service",
+      "item": [
+        {
+          "name": "Crear notificacion",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"miembroId\": 1,\n  \"canal\": \"EMAIL\",\n  \"asunto\": \"Bienvenido a IronFlow\",\n  \"mensaje\": \"Tu inscripcion fue registrada correctamente\",\n  \"estado\": \"PENDIENTE\"\n}" },
+            "url": "{{notification}}/api/notificaciones"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EquipoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">equipment-service</a> &gt; <a href="index.source.html" class="el_package">com.ironflow.equipmentservice.controller</a> &gt; <span class="el_source">EquipoController.java</span></div><h1>EquipoController.java</h1><pre class="source lang-java linenums">package com.ironflow.equipmentservice.controller;
+
+import com.ironflow.equipmentservice.dto.EquipoRequest;
+import com.ironflow.equipmentservice.dto.EquipoResponse;
+import com.ironflow.equipmentservice.service.EquipoService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+@RestController
+@RequestMapping(&quot;/api/equipos&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Equipos&quot;, description = &quot;Inventario, estado y mantenimiento&quot;)
+public class EquipoController {
+
+    private final EquipoService equipoService;
+
+    @PostMapping
+    @Operation(summary = &quot;Crear equipo&quot;, description = &quot;Retorna 201 o 400 si estado, stock y mantenimiento son inconsistentes&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;201&quot;, description = &quot;Equipo creado&quot;), @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos o estado inconsistentes&quot;)})
+    public ResponseEntity&lt;EquipoResponse&gt; crearEquipo(@Valid @RequestBody EquipoRequest request) {
+<span class="fc" id="L38">        EquipoResponse respuesta = equipoService.crearEquipo(request);</span>
+
+<span class="fc" id="L40">        URI location = ServletUriComponentsBuilder.fromCurrentContextPath()</span>
+<span class="fc" id="L41">                .path(&quot;/api/equipos/{id}&quot;)</span>
+<span class="fc" id="L42">                .buildAndExpand(respuesta.id())</span>
+<span class="fc" id="L43">                .toUri();</span>
+
+<span class="fc" id="L45">        return ResponseEntity.created(location).body(respuesta);</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Listar equipos&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;EquipoResponse&gt;&gt; listarEquipos() {
+<span class="fc" id="L52">        return ResponseEntity.ok(equipoService.listarEquipos());</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Buscar equipo por ID&quot;, description = &quot;Retorna 200 o 404&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Equipo encontrado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Equipo no encontrado&quot;)})
+    public ResponseEntity&lt;EquipoResponse&gt; buscarPorId(@PathVariable Long id) {
+<span class="fc" id="L59">        return ResponseEntity.ok(equipoService.buscarPorId(id));</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Actualizar equipo&quot;, description = &quot;Retorna 200, 400, 404 o 409&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Equipo actualizado&quot;), @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inconsistentes&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Equipo no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Equipo inactivo&quot;)})
+    public ResponseEntity&lt;EquipoResponse&gt; actualizarEquipo(@PathVariable Long id, @Valid @RequestBody EquipoRequest request) {
+<span class="fc" id="L66">        return ResponseEntity.ok(equipoService.actualizarEquipo(id, request));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Desactivar equipo&quot;, description = &quot;Realiza baja lógica, pone stock en cero y retorna 204&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;204&quot;, description = &quot;Equipo desactivado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Equipo no encontrado&quot;)})
+    public ResponseEntity&lt;Void&gt; eliminarEquipo(@PathVariable Long id) {
+<span class="fc" id="L73">        equipoService.eliminarEquipo(id);</span>
+<span class="fc" id="L74">        return ResponseEntity.noContent().build();</span>
+    }
+
+    @GetMapping(&quot;/estado/{estado}&quot;)
+    @Operation(summary = &quot;Listar equipos por estado&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;EquipoResponse&gt;&gt; listarPorEstado(@PathVariable String estado) {
+<span class="fc" id="L81">        return ResponseEntity.ok(equipoService.listarPorEstado(estado));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

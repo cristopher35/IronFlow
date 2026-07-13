@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PagoServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">payment-service</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.paymentservice.service</a> &gt; <span class="el_source">PagoServiceImpl.java</span></div><h1>PagoServiceImpl.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.paymentservice.service;
+
+import cl.duocuc.crmenesesn.paymentservice.client.MembershipClient;
+import cl.duocuc.crmenesesn.paymentservice.dto.PagoRequest;
+import cl.duocuc.crmenesesn.paymentservice.dto.PagoResponse;
+import cl.duocuc.crmenesesn.paymentservice.model.Pago;
+import cl.duocuc.crmenesesn.paymentservice.repository.PagoRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class PagoServiceImpl implements PagoService {
+
+    private final PagoRepository pagoRepository;
+    private final MembershipClient membershipClient;
+
+    @Override
+    public PagoResponse registrarPago(PagoRequest request) {
+<span class="fc" id="L25">        log.info(&quot;Registrando pago para miembro id: {}&quot;, request.miembroId());</span>
+
+        try {
+<span class="fc" id="L28">            Object planMiembros = membershipClient.getPlanMiembroByMiembroId(request.miembroId());</span>
+<span class="pc bpc" id="L29" title="2 of 6 branches missed.">            if (planMiembros == null || (planMiembros instanceof List &amp;&amp; ((List&lt;?&gt;) planMiembros).isEmpty())) {</span>
+<span class="fc" id="L30">                log.warn(&quot;No se encontró plan activo para miembro id: {}&quot;, request.miembroId());</span>
+<span class="fc" id="L31">                throw new NoSuchElementException(&quot;No existe un plan activo para el miembro con id: &quot; + request.miembroId());</span>
+            }
+<span class="fc" id="L33">        } catch (NoSuchElementException e) {</span>
+<span class="fc" id="L34">            throw e;</span>
+<span class="fc" id="L35">        } catch (Exception e) {</span>
+<span class="fc" id="L36">            log.warn(&quot;Error al consultar plan para miembro id: {}&quot;, request.miembroId());</span>
+<span class="fc" id="L37">            throw new NoSuchElementException(&quot;No existe un plan activo para el miembro con id: &quot; + request.miembroId());</span>
+<span class="fc" id="L38">        }</span>
+
+<span class="fc" id="L40">        Pago pago = Pago.builder()</span>
+<span class="fc" id="L41">                .miembroId(request.miembroId())</span>
+<span class="fc" id="L42">                .monto(request.monto())</span>
+<span class="fc" id="L43">                .metodoPago(request.metodoPago())</span>
+<span class="fc" id="L44">                .build();</span>
+
+<span class="fc" id="L46">        Pago saved = pagoRepository.save(pago);</span>
+<span class="fc" id="L47">        log.info(&quot;Pago registrado con id: {}&quot;, saved.getId());</span>
+<span class="fc" id="L48">        return toResponse(saved);</span>
+    }
+
+    @Override
+    public PagoResponse obtenerPagoPorId(Long id) {
+<span class="fc" id="L53">        log.info(&quot;Buscando pago con id: {}&quot;, id);</span>
+<span class="fc" id="L54">        Pago pago = pagoRepository.findById(id)</span>
+<span class="fc" id="L55">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L56">                    log.warn(&quot;Pago no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L57">                    return new NoSuchElementException(&quot;Pago no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc" id="L59">        return toResponse(pago);</span>
+    }
+
+    @Override
+    public List&lt;PagoResponse&gt; obtenerPagosPorMiembro(Long miembroId) {
+<span class="fc" id="L64">        log.info(&quot;Obteniendo pagos del miembro con id: {}&quot;, miembroId);</span>
+<span class="fc" id="L65">        return pagoRepository.findByMiembroId(miembroId)</span>
+<span class="fc" id="L66">                .stream()</span>
+<span class="fc" id="L67">                .map(this::toResponse)</span>
+<span class="fc" id="L68">                .toList();</span>
+    }
+
+    @Override
+    public List&lt;PagoResponse&gt; obtenerTodosLosPagos() {
+<span class="fc" id="L73">        log.info(&quot;Obteniendo todos los pagos&quot;);</span>
+<span class="fc" id="L74">        return pagoRepository.findAll()</span>
+<span class="fc" id="L75">                .stream()</span>
+<span class="fc" id="L76">                .map(this::toResponse)</span>
+<span class="fc" id="L77">                .toList();</span>
+    }
+
+    @Override
+    public PagoResponse anularPago(Long id) {
+<span class="fc" id="L82">        log.info(&quot;Anulando pago con id: {}&quot;, id);</span>
+<span class="fc" id="L83">        Pago pago = pagoRepository.findById(id)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L85">                    log.warn(&quot;Pago no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L86">                    return new NoSuchElementException(&quot;Pago no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if (pago.getEstado().equals(&quot;ANULADO&quot;)) {</span>
+<span class="fc" id="L89">            log.warn(&quot;Intento de anular pago ya anulado con id: {}&quot;, id);</span>
+<span class="fc" id="L90">            throw new IllegalArgumentException(&quot;El pago ya se encuentra anulado&quot;);</span>
+        }
+<span class="fc" id="L92">        pago.setEstado(&quot;ANULADO&quot;);</span>
+<span class="fc" id="L93">        Pago saved = pagoRepository.save(pago);</span>
+<span class="fc" id="L94">        log.info(&quot;Pago anulado con id: {}&quot;, saved.getId());</span>
+<span class="fc" id="L95">        return toResponse(saved);</span>
+    }
+
+    private PagoResponse toResponse(Pago pago) {
+<span class="fc" id="L99">        return new PagoResponse(</span>
+<span class="fc" id="L100">                pago.getId(),</span>
+<span class="fc" id="L101">                pago.getMiembroId(),</span>
+<span class="fc" id="L102">                pago.getMonto(),</span>
+<span class="fc" id="L103">                pago.getFechaPago(),</span>
+<span class="fc" id="L104">                pago.getMetodoPago(),</span>
+<span class="fc" id="L105">                pago.getEstado()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

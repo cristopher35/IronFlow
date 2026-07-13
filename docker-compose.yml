@@ -1,13 +1,23 @@
 services:
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    environment:
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
+      EUREKA_INSTANCE_HOSTNAME: discovery-server
+    ports:
+      - "8761:8761"
+    networks:
+      - ironflow-net
+
   member-service:
     build: ./memberService/memberService/IronFlow
     container_name: member-service
+    depends_on:
+      - discovery-server
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${MEMBER_DB_HOST}
-      DB_NAME: ${MEMBER_DB_NAME}
-      DB_USER: ${MEMBER_DB_USER}
-      DB_PASSWORD: ${MEMBER_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
     ports:
       - "8081:8081"
     networks:
@@ -17,13 +27,11 @@ services:
     build: ./MemberShip-service
     container_name: membership-service
     depends_on:
+      - discovery-server
       - member-service
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${MEMBERSHIP_DB_HOST}
-      DB_NAME: ${MEMBERSHIP_DB_NAME}
-      DB_USER: ${MEMBERSHIP_DB_USER}
-      DB_PASSWORD: ${MEMBERSHIP_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
       MEMBER_SERVICE_URL: http://member-service:8081
     ports:
       - "8082:8082"
@@ -34,13 +42,11 @@ services:
     build: ./Payment-service
     container_name: payment-service
     depends_on:
+      - discovery-server
       - membership-service
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${PAYMENT_DB_HOST}
-      DB_NAME: ${PAYMENT_DB_NAME}
-      DB_USER: ${PAYMENT_DB_USER}
-      DB_PASSWORD: ${PAYMENT_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
       MEMBERSHIP_SERVICE_URL: http://membership-service:8082
     ports:
       - "8083:8083"
@@ -51,17 +57,14 @@ services:
     build: ./booking-service/booking-service
     container_name: booking-service
     depends_on:
+      - discovery-server
       - member-service
       - class-service
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${BOOKING_DB_HOST}
-      DB_PORT: ${BOOKING_DB_PORT:-5432}
-      DB_NAME: ${BOOKING_DB_NAME}
-      DB_USER: ${BOOKING_DB_USER}
-      DB_PASSWORD: ${BOOKING_DB_PASSWORD}
-      MEMBER_SERVICE_URL: http://member-service:8081/member-app
-      CLASS_SERVICE_URL: http://class-service:8084/class-app
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
+      MEMBER_SERVICE_URL: http://member-service:8081
+      CLASS_SERVICE_URL: http://class-service:8084
     ports:
       - "8085:8085"
     networks:
@@ -71,10 +74,12 @@ services:
     build: ./class-service/class-service
     container_name: class-service
     depends_on:
+      - discovery-server
       - trainer-service
     environment:
       SPRING_PROFILES_ACTIVE: h2
-      TRAINER_SERVICE_URL: http://trainer-service:8086/trainer-app
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
+      TRAINER_SERVICE_URL: http://trainer-service:8086
     ports:
       - "8084:8084"
     networks:
@@ -83,13 +88,11 @@ services:
   trainer-service:
     build: ./trainer-service/trainer-service
     container_name: trainer-service
+    depends_on:
+      - discovery-server
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${TRAINER_DB_HOST}
-      DB_PORT: ${TRAINER_DB_PORT:-5432}
-      DB_NAME: ${TRAINER_DB_NAME}
-      DB_USER: ${TRAINER_DB_USER}
-      DB_PASSWORD: ${TRAINER_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
     ports:
       - "8086:8086"
     networks:
@@ -99,15 +102,12 @@ services:
     build: ./access-service/access-service
     container_name: access-service
     depends_on:
+      - discovery-server
       - membership-service
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${ACCESS_DB_HOST}
-      DB_PORT: ${ACCESS_DB_PORT:-5432}
-      DB_NAME: ${ACCESS_DB_NAME}
-      DB_USER: ${ACCESS_DB_USER}
-      DB_PASSWORD: ${ACCESS_DB_PASSWORD}
-      MEMBERSHIP_SERVICE_URL: http://membership-service:8082/membership-app
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
+      MEMBERSHIP_SERVICE_URL: http://membership-service:8082
     ports:
       - "8087:8087"
     networks:
@@ -116,13 +116,11 @@ services:
   equipment-service:
     build: ./equipment-service/equipment-service/equipment-service
     container_name: equipment-service
+    depends_on:
+      - discovery-server
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${EQUIPMENT_DB_HOST}
-      DB_PORT: ${EQUIPMENT_DB_PORT:-5432}
-      DB_NAME: ${EQUIPMENT_DB_NAME}
-      DB_USER: ${EQUIPMENT_DB_USER}
-      DB_PASSWORD: ${EQUIPMENT_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
     ports:
       - "8088:8088"
     networks:
@@ -131,13 +129,11 @@ services:
   branch-service:
     build: ./branch-service/branch-service
     container_name: branch-service
+    depends_on:
+      - discovery-server
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${BRANCH_DB_HOST}
-      DB_PORT: ${BRANCH_DB_PORT:-5432}
-      DB_NAME: ${BRANCH_DB_NAME}
-      DB_USER: ${BRANCH_DB_USER}
-      DB_PASSWORD: ${BRANCH_DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
     ports:
       - "8089:8089"
     networks:
@@ -147,15 +143,12 @@ services:
     build: ./notification-service/notification-service
     container_name: notification-service
     depends_on:
+      - discovery-server
       - member-service
     environment:
-      SPRING_PROFILES_ACTIVE: neon
-      DB_HOST: ${NOTIFICATION_DB_HOST}
-      DB_PORT: ${NOTIFICATION_DB_PORT:-5432}
-      DB_NAME: ${NOTIFICATION_DB_NAME}
-      DB_USER: ${NOTIFICATION_DB_USER}
-      DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
-      MEMBER_SERVICE_URL: http://member-service:8081/member-app
+      SPRING_PROFILES_ACTIVE: h2
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
+      MEMBER_SERVICE_URL: http://member-service:8081
     ports:
       - "8090:8090"
     networks:
@@ -165,6 +158,7 @@ services:
     build: ./api-gateway
     container_name: api-gateway
     depends_on:
+      - discovery-server
       - member-service
       - membership-service
       - payment-service
@@ -176,6 +170,7 @@ services:
       - branch-service
       - notification-service
     environment:
+      EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
       MEMBER_SERVICE_URL: http://member-service:8081
       MEMBERSHIP_SERVICE_URL: http://membership-service:8082
       PAYMENT_SERVICE_URL: http://payment-service:8083

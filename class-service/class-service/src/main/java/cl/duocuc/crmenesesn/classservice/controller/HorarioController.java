@@ -62,6 +62,20 @@ public class HorarioController {
         return ResponseEntity.ok(horarioService.actualizarHorario(id, request));
     }
 
+    @PatchMapping("/{id}/reservar")
+    @Operation(summary = "Reservar cupo interno", description = "Incrementa aforoActual y rechaza con 409 si la clase ya está llena")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Cupo reservado"), @ApiResponse(responseCode = "404", description = "Horario no encontrado"), @ApiResponse(responseCode = "409", description = "Clase llena o horario inactivo")})
+    public ResponseEntity<HorarioResponse> reservarCupo(@PathVariable Long id) {
+        return ResponseEntity.ok(horarioService.reservarCupo(id));
+    }
+
+    @PatchMapping("/{id}/liberar")
+    @Operation(summary = "Liberar cupo interno", description = "Decrementa aforoActual al cancelar una reserva")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Cupo liberado"), @ApiResponse(responseCode = "404", description = "Horario no encontrado")})
+    public ResponseEntity<HorarioResponse> liberarCupo(@PathVariable Long id) {
+        return ResponseEntity.ok(horarioService.liberarCupo(id));
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Desactivar horario", description = "Realiza baja lógica y retorna 204")
     @ApiResponses({@ApiResponse(responseCode = "204", description = "Horario desactivado"), @ApiResponse(responseCode = "404", description = "Horario no encontrado")})

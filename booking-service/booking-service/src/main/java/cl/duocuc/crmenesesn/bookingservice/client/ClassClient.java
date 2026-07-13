@@ -23,4 +23,22 @@ public class ClassClient {
                 .timeout(Duration.ofSeconds(5))
                 .block();
     }
+
+    public Object reservarCupo(Long id) {
+        return webClient.patch()
+                .uri("/api/schedules/{id}/reservar", id)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .timeout(Duration.ofSeconds(5))
+                .block();
+    }
+
+    public Object liberarCupo(Long id) {
+        return webClient.patch()
+                .uri("/api/schedules/{id}/liberar", id)
+                .retrieve()
+                .bodyToMono(Object.class)
+                .timeout(Duration.ofSeconds(5))
+                .block();
+    }
 }

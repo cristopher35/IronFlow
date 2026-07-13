@@ -1,23 +1,15 @@
 package cl.duocuc.crmenesesn.paymentservice.client;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import cl.duocuc.crmenesesn.paymentservice.config.FeignClientConfig;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-@Component
-public class MembershipClient {
+import java.util.List;
 
-    private final RestTemplate restTemplate;
+@FeignClient(name = "membership-service", configuration = FeignClientConfig.class)
+public interface MembershipClient {
 
-    @Value("${membership.service.url:http://localhost:8082}")
-    private String membershipServiceUrl;
-
-    public MembershipClient() {
-        this.restTemplate = new RestTemplate();
-    }
-
-    public Object getPlanMiembroByMiembroId(Long miembroId) {
-        String url = membershipServiceUrl + "/api/planes-miembros/miembro/" + miembroId;
-        return restTemplate.getForObject(url, Object.class);
-    }
+    @GetMapping("/api/planes-miembros/miembro/{miembroId}")
+    List<Object> getPlanMiembroByMiembroId(@PathVariable("miembroId") Long miembroId);
 }

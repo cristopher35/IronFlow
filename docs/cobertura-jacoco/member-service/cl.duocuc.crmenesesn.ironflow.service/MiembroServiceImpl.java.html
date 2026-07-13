@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MiembroServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">IronFlow</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.ironflow.service</a> &gt; <span class="el_source">MiembroServiceImpl.java</span></div><h1>MiembroServiceImpl.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.ironflow.service;
+
+import cl.duocuc.crmenesesn.ironflow.dto.MiembroRequest;
+import cl.duocuc.crmenesesn.ironflow.dto.MiembroResponse;
+import cl.duocuc.crmenesesn.ironflow.model.Miembro;
+import cl.duocuc.crmenesesn.ironflow.repository.MiembroRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.NoSuchElementException;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Service
+@RequiredArgsConstructor
+public class MiembroServiceImpl implements MiembroService {
+
+    private final MiembroRepository miembroRepository;
+
+    @Override
+    @Transactional
+    public MiembroResponse crearMiembro(MiembroRequest request) {
+<span class="fc" id="L25">        log.info(&quot;Creando miembro con RUT: {}&quot;, request.rut());</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (miembroRepository.existsByRut(request.rut())) {</span>
+<span class="fc" id="L27">            log.warn(&quot;Ya existe un miembro con RUT: {}&quot;, request.rut());</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Ya existe un miembro con el RUT: &quot; + request.rut());</span>
+        }
+<span class="fc bfc" id="L30" title="All 2 branches covered.">        if (miembroRepository.existsByEmail(request.email())) {</span>
+<span class="fc" id="L31">            log.warn(&quot;Ya existe un miembro con email: {}&quot;, request.email());</span>
+<span class="fc" id="L32">            throw new IllegalArgumentException(&quot;Ya existe un miembro con el email: &quot; + request.email());</span>
+        }
+<span class="fc" id="L34">        Miembro miembro = Miembro.builder()</span>
+<span class="fc" id="L35">                .nombre(request.nombre())</span>
+<span class="fc" id="L36">                .rut(request.rut())</span>
+<span class="fc" id="L37">                .email(request.email())</span>
+<span class="fc" id="L38">                .telefono(request.telefono())</span>
+<span class="fc" id="L39">                .build();</span>
+<span class="fc" id="L40">        Miembro saved = miembroRepository.save(miembro);</span>
+<span class="fc" id="L41">        log.info(&quot;Miembro creado con id: {}&quot;, saved.getId());</span>
+<span class="fc" id="L42">        return toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MiembroResponse obtenerMiembroPorId(Long id) {
+<span class="fc" id="L48">        log.info(&quot;Buscando miembro con id: {}&quot;, id);</span>
+<span class="fc" id="L49">        Miembro miembro = miembroRepository.findById(id)</span>
+<span class="fc" id="L50">                .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L51">                    log.warn(&quot;Miembro no encontrado con id: {}&quot;, id);</span>
+<span class="nc" id="L52">                    return new NoSuchElementException(&quot;Miembro no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc" id="L54">        return toResponse(miembro);</span>
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List&lt;MiembroResponse&gt; obtenerTodosLosMiembros() {
+<span class="fc" id="L60">        log.info(&quot;Obteniendo todos los miembros&quot;);</span>
+<span class="fc" id="L61">        return miembroRepository.findAll()</span>
+<span class="fc" id="L62">                .stream()</span>
+<span class="fc" id="L63">                .map(this::toResponse)</span>
+<span class="fc" id="L64">                .toList();</span>
+    }
+
+    @Override
+    @Transactional
+    public MiembroResponse actualizarMiembro(Long id, MiembroRequest request) {
+<span class="fc" id="L70">        log.info(&quot;Actualizando miembro con id: {}&quot;, id);</span>
+<span class="fc" id="L71">        Miembro miembro = miembroRepository.findById(id)</span>
+<span class="fc" id="L72">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L73">                    log.warn(&quot;Miembro no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L74">                    return new NoSuchElementException(&quot;Miembro no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (miembro.getEstado().equals(&quot;INACTIVO&quot;)) {</span>
+<span class="fc" id="L77">            log.warn(&quot;Intento de actualizar miembro INACTIVO con id: {}&quot;, id);</span>
+<span class="fc" id="L78">            throw new IllegalArgumentException(&quot;No se puede actualizar un miembro INACTIVO&quot;);</span>
+        }
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (miembroRepository.existsByRutAndIdNot(request.rut(), id)) {</span>
+<span class="fc" id="L81">            log.warn(&quot;El RUT {} ya pertenece a otro miembro&quot;, request.rut());</span>
+<span class="fc" id="L82">            throw new IllegalArgumentException(&quot;Ya existe un miembro con el RUT: &quot; + request.rut());</span>
+        }
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (miembroRepository.existsByEmailAndIdNot(request.email(), id)) {</span>
+<span class="fc" id="L85">            log.warn(&quot;El email {} ya pertenece a otro miembro&quot;, request.email());</span>
+<span class="fc" id="L86">            throw new IllegalArgumentException(&quot;Ya existe un miembro con el email: &quot; + request.email());</span>
+        }
+<span class="nc" id="L88">        miembro.setNombre(request.nombre());</span>
+<span class="nc" id="L89">        miembro.setRut(request.rut());</span>
+<span class="nc" id="L90">        miembro.setEmail(request.email());</span>
+<span class="nc" id="L91">        miembro.setTelefono(request.telefono());</span>
+<span class="nc" id="L92">        Miembro saved = miembroRepository.save(miembro);</span>
+<span class="nc" id="L93">        log.info(&quot;Miembro actualizado con id: {}&quot;, saved.getId());</span>
+<span class="nc" id="L94">        return toResponse(saved);</span>
+    }
+
+    @Override
+    @Transactional
+    public void eliminarMiembro(Long id) {
+<span class="fc" id="L100">        log.info(&quot;Desactivando miembro con id: {}&quot;, id);</span>
+<span class="fc" id="L101">        Miembro miembro = miembroRepository.findById(id)</span>
+<span class="fc" id="L102">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L103">                    log.warn(&quot;Miembro no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L104">                    return new NoSuchElementException(&quot;Miembro no encontrado con id: &quot; + id);</span>
+                });
+<span class="fc" id="L106">        miembro.setEstado(&quot;INACTIVO&quot;);</span>
+<span class="fc" id="L107">        miembroRepository.save(miembro);</span>
+<span class="fc" id="L108">        log.info(&quot;Miembro desactivado con id: {}&quot;, id);</span>
+<span class="fc" id="L109">    }</span>
+
+    private MiembroResponse toResponse(Miembro miembro) {
+<span class="fc" id="L112">        return new MiembroResponse(</span>
+<span class="fc" id="L113">                miembro.getId(),</span>
+<span class="fc" id="L114">                miembro.getNombre(),</span>
+<span class="fc" id="L115">                miembro.getRut(),</span>
+<span class="fc" id="L116">                miembro.getEmail(),</span>
+<span class="fc" id="L117">                miembro.getTelefono(),</span>
+<span class="fc" id="L118">                miembro.getEstado()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

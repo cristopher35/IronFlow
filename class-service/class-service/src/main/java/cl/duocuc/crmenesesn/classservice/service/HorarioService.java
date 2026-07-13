@@ -13,5 +13,7 @@ public interface HorarioService {
     List<HorarioResponse> obtenerHorariosPorTipoClase(Long tipoClaseId);
     List<HorarioResponse> obtenerHorariosPorEntrenador(Long entrenadorId);
     HorarioResponse actualizarHorario(Long id, HorarioRequest request);
+    HorarioResponse reservarCupo(Long id);
+    HorarioResponse liberarCupo(Long id);
     void eliminarHorario(Long id);
 }

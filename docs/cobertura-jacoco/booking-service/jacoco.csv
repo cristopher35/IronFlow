@@ -1,0 +1,12 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+booking-service,cl.duocuc.crmenesesn.bookingservice.controller,ReservaController,0,40,0,0,0,7,0,6,0,6
+booking-service,cl.duocuc.crmenesesn.bookingservice.model,Reserva,0,4,0,0,0,2,0,1,0,1
+booking-service,cl.duocuc.crmenesesn.bookingservice.exception,ErrorApi,0,21,0,0,0,1,0,1,0,1
+booking-service,cl.duocuc.crmenesesn.bookingservice.exception,GlobalExceptionHandler,32,46,2,0,5,7,2,5,1,5
+booking-service,cl.duocuc.crmenesesn.bookingservice.service,ReservaServiceImpl,35,236,0,8,9,61,0,14,0,10
+booking-service,cl.duocuc.crmenesesn.bookingservice.dto,ReservaResponse,0,18,0,0,0,1,0,1,0,1
+booking-service,cl.duocuc.crmenesesn.bookingservice.dto,ReservaRequest,0,9,0,0,0,1,0,1,0,1
+booking-service,cl.duocuc.crmenesesn.bookingservice.client,ClassClient,0,68,0,0,0,21,0,4,0,4
+booking-service,cl.duocuc.crmenesesn.bookingservice.client,MemberClient,0,24,0,0,0,7,0,2,0,2
+booking-service,cl.duocuc.crmenesesn.bookingservice.config,OpenApiConfig,0,17,0,0,0,5,0,2,0,2
+booking-service,cl.duocuc.crmenesesn.bookingservice,BookingServiceApplication,5,3,0,0,2,1,1,1,1,1

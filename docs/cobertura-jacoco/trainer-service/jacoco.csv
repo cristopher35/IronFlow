@@ -1,0 +1,9 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+trainer-service,com.ironflow.trainerservice.dto,EntrenadorResponse,0,27,0,0,0,1,0,1,0,1
+trainer-service,com.ironflow.trainerservice,TrainerServiceApplication,5,3,0,0,2,1,1,1,1,1
+trainer-service,com.ironflow.trainerservice.service,EntrenadorService,19,262,1,5,4,68,2,12,1,10
+trainer-service,com.ironflow.trainerservice.controller,EntrenadorController,0,54,0,0,0,12,0,6,0,6
+trainer-service,com.ironflow.trainerservice.exception,RecursoNoEncontradoException,0,4,0,0,0,2,0,1,0,1
+trainer-service,com.ironflow.trainerservice.exception,ManejadorGlobalExcepciones,32,55,2,0,5,10,2,6,1,6
+trainer-service,com.ironflow.trainerservice.exception,ErrorApi,0,21,0,0,0,1,0,1,0,1
+trainer-service,com.ironflow.trainerservice.config,OpenApiConfig,0,17,0,0,0,3,0,2,0,2

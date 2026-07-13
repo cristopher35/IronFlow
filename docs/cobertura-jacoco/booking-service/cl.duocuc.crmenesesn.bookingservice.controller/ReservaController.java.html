@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">booking-service</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.bookingservice.controller</a> &gt; <span class="el_source">ReservaController.java</span></div><h1>ReservaController.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.bookingservice.controller;
+
+import cl.duocuc.crmenesesn.bookingservice.dto.ReservaRequest;
+import cl.duocuc.crmenesesn.bookingservice.dto.ReservaResponse;
+import cl.duocuc.crmenesesn.bookingservice.service.ReservaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/bookings&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Reservas&quot;, description = &quot;Reservas de clases y cancelación de reservas&quot;)
+public class ReservaController {
+
+    private final ReservaService reservaService;
+
+    @PostMapping
+    @Operation(summary = &quot;Crear reserva&quot;, description = &quot;Valida el miembro y el horario antes de registrar una reserva&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Reserva creada&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos o reserva duplicada&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Miembro u horario no encontrado&quot;),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Servicio remoto no disponible&quot;)
+    })
+    public ResponseEntity&lt;ReservaResponse&gt; crearReserva(@Valid @RequestBody ReservaRequest request) {
+<span class="fc" id="L35">        ReservaResponse response = reservaService.crearReserva(request);</span>
+<span class="fc" id="L36">        return new ResponseEntity&lt;&gt;(response, HttpStatus.CREATED);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Buscar reserva por ID&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Reserva encontrada&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Reserva no encontrada&quot;)
+    })
+    public ResponseEntity&lt;ReservaResponse&gt; obtenerPorId(@PathVariable Long id) {
+<span class="fc" id="L46">        return ResponseEntity.ok(reservaService.obtenerReservaPorId(id));</span>
+    }
+
+    @GetMapping(&quot;/miembro/{miembroId}&quot;)
+    @Operation(summary = &quot;Listar reservas por miembro&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)
+    })
+    public ResponseEntity&lt;List&lt;ReservaResponse&gt;&gt; listarPorMiembro(@PathVariable Long miembroId) {
+<span class="fc" id="L55">        return ResponseEntity.ok(reservaService.obtenerReservasPorMiembro(miembroId));</span>
+    }
+
+    @GetMapping(&quot;/horario/{horarioId}&quot;)
+    @Operation(summary = &quot;Listar reservas por horario&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)
+    })
+    public ResponseEntity&lt;List&lt;ReservaResponse&gt;&gt; listarPorHorario(@PathVariable Long horarioId) {
+<span class="fc" id="L64">        return ResponseEntity.ok(reservaService.obtenerReservasPorHorario(horarioId));</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Listar todas las reservas&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)
+    })
+    public ResponseEntity&lt;List&lt;ReservaResponse&gt;&gt; listarTodas() {
+<span class="fc" id="L73">        return ResponseEntity.ok(reservaService.obtenerTodasLasReservas());</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Cancelar reserva&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Reserva cancelada&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Reserva no encontrada&quot;),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Reserva ya cancelada&quot;)
+    })
+    public ResponseEntity&lt;ReservaResponse&gt; cancelarReserva(@PathVariable Long id) {
+<span class="fc" id="L84">        return ResponseEntity.ok(reservaService.cancelarReserva(id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,6 +45,45 @@ class EquipoServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar equipo disponible con mantenimiento requerido")
+    void rechazaDisponibleConMantenimientoRequerido() {
+        assertThrows(IllegalArgumentException.class,
+                () -> service.crearEquipo(request("DISPONIBLE", 1, true)));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe listar todos los equipos")
+    void listaTodosLosEquipos() {
+        when(repository.findAll()).thenReturn(List.of(equipo("DISPONIBLE", 2, false)));
+
+        List<EquipoResponse> response = service.listarEquipos();
+
+        assertEquals(1, response.size());
+        verify(repository).findAll();
+    }
+
+    @Test
+    @DisplayName("Debe buscar equipo por id")
+    void buscaEquipoPorId() {
+        when(repository.findById(1L)).thenReturn(Optional.of(equipo("DISPONIBLE", 2, false)));
+
+        EquipoResponse response = service.buscarPorId(1L);
+
+        assertEquals(1L, response.id());
+        assertEquals("Caminadora", response.nombre());
+    }
+
+    @Test
+    @DisplayName("Debe fallar al buscar equipo inexistente")
+    void fallaBuscarEquipoInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(com.ironflow.equipmentservice.exception.RecursoNoEncontradoException.class,
+                () -> service.buscarPorId(99L));
+    }
+
+    @Test
     @DisplayName("Debe rechazar actualización de equipo inactivo")
     void rechazaActualizarEquipoInactivo() {
         Equipo equipo = equipo("INACTIVO", 0, false);
@@ -52,6 +92,31 @@ class EquipoServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> service.actualizarEquipo(1L, request("DISPONIBLE", 2, false)));
         verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe actualizar equipo activo")
+    void actualizaEquipoActivo() {
+        Equipo equipo = equipo("DISPONIBLE", 2, false);
+        when(repository.findById(1L)).thenReturn(Optional.of(equipo));
+        when(repository.save(equipo)).thenReturn(equipo);
+
+        EquipoResponse response = service.actualizarEquipo(1L, request("MANTENCION", 0, true));
+
+        assertEquals("MANTENCION", response.estado());
+        assertEquals(0, response.cantidadDisponible());
+        assertTrue(response.mantenimientoRequerido());
+    }
+
+    @Test
+    @DisplayName("Debe listar equipos por estado")
+    void listaEquiposPorEstado() {
+        when(repository.findByEstadoIgnoreCase("DISPONIBLE")).thenReturn(List.of(equipo("DISPONIBLE", 2, false)));
+
+        List<EquipoResponse> response = service.listarPorEstado("DISPONIBLE");
+
+        assertEquals(1, response.size());
+        verify(repository).findByEstadoIgnoreCase("DISPONIBLE");
     }
 
     @Test
@@ -65,6 +130,16 @@ class EquipoServiceTest {
         assertEquals("INACTIVO", equipo.getEstado());
         assertEquals(0, equipo.getCantidadDisponible());
         verify(repository).save(equipo);
+    }
+
+    @Test
+    @DisplayName("Debe fallar al eliminar equipo inexistente")
+    void fallaEliminarEquipoInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(com.ironflow.equipmentservice.exception.RecursoNoEncontradoException.class,
+                () -> service.eliminarEquipo(99L));
+        verify(repository, never()).save(any());
     }
 
     private EquipoRequest request(String estado, int cantidad, boolean mantenimiento) {

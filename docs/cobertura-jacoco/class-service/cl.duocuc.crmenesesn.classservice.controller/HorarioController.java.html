@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HorarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">class-service</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.classservice.controller</a> &gt; <span class="el_source">HorarioController.java</span></div><h1>HorarioController.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.classservice.controller;
+
+import cl.duocuc.crmenesesn.classservice.dto.HorarioRequest;
+import cl.duocuc.crmenesesn.classservice.dto.HorarioResponse;
+import cl.duocuc.crmenesesn.classservice.service.HorarioService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+@RestController
+@RequestMapping(&quot;/api/schedules&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Horarios&quot;, description = &quot;Programación, aforo y asignación de entrenadores&quot;)
+public class HorarioController {
+
+    private final HorarioService horarioService;
+
+    @PostMapping
+    @Operation(summary = &quot;Crear horario&quot;, description = &quot;Valida clase activa, entrenador remoto, fecha futura y conflictos; retorna 201, 400, 404 o 409&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;201&quot;, description = &quot;Horario creado&quot;), @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Clase o entrenador no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflicto de horario&quot;), @ApiResponse(responseCode = &quot;500&quot;, description = &quot;trainer-service no disponible&quot;)})
+    public ResponseEntity&lt;HorarioResponse&gt; crearHorario(@Valid @RequestBody HorarioRequest request) {
+<span class="fc" id="L30">        return ResponseEntity.status(HttpStatus.CREATED).body(horarioService.crearHorario(request));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Buscar horario por ID&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Horario encontrado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Horario no encontrado&quot;)})
+    public ResponseEntity&lt;HorarioResponse&gt; obtenerHorarioPorId(@PathVariable Long id) {
+<span class="fc" id="L37">        return ResponseEntity.ok(horarioService.obtenerHorarioPorId(id));</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Listar horarios&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;HorarioResponse&gt;&gt; obtenerTodosLosHorarios() {
+<span class="fc" id="L44">        return ResponseEntity.ok(horarioService.obtenerTodosLosHorarios());</span>
+    }
+
+    @GetMapping(&quot;/class/{tipoClaseId}&quot;)
+    @Operation(summary = &quot;Listar horarios por tipo de clase&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;HorarioResponse&gt;&gt; obtenerHorariosPorTipoClase(@PathVariable Long tipoClaseId) {
+<span class="fc" id="L51">        return ResponseEntity.ok(horarioService.obtenerHorariosPorTipoClase(tipoClaseId));</span>
+    }
+
+    @GetMapping(&quot;/trainer/{entrenadorId}&quot;)
+    @Operation(summary = &quot;Listar horarios por entrenador&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;HorarioResponse&gt;&gt; obtenerHorariosPorEntrenador(@PathVariable Long entrenadorId) {
+<span class="fc" id="L58">        return ResponseEntity.ok(horarioService.obtenerHorariosPorEntrenador(entrenadorId));</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Actualizar horario&quot;, description = &quot;Controla aforo actual, clase activa y conflictos del entrenador&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Horario actualizado&quot;), @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Recurso no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflicto de negocio&quot;)})
+    public ResponseEntity&lt;HorarioResponse&gt; actualizarHorario(@PathVariable Long id, @Valid @RequestBody HorarioRequest request) {
+<span class="fc" id="L65">        return ResponseEntity.ok(horarioService.actualizarHorario(id, request));</span>
+    }
+
+    @PatchMapping(&quot;/{id}/reservar&quot;)
+    @Operation(summary = &quot;Reservar cupo interno&quot;, description = &quot;Incrementa aforoActual y rechaza con 409 si la clase ya está llena&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Cupo reservado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Horario no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Clase llena o horario inactivo&quot;)})
+    public ResponseEntity&lt;HorarioResponse&gt; reservarCupo(@PathVariable Long id) {
+<span class="fc" id="L72">        return ResponseEntity.ok(horarioService.reservarCupo(id));</span>
+    }
+
+    @PatchMapping(&quot;/{id}/liberar&quot;)
+    @Operation(summary = &quot;Liberar cupo interno&quot;, description = &quot;Decrementa aforoActual al cancelar una reserva&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Cupo liberado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Horario no encontrado&quot;)})
+    public ResponseEntity&lt;HorarioResponse&gt; liberarCupo(@PathVariable Long id) {
+<span class="fc" id="L79">        return ResponseEntity.ok(horarioService.liberarCupo(id));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Desactivar horario&quot;, description = &quot;Realiza baja lógica y retorna 204&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;204&quot;, description = &quot;Horario desactivado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Horario no encontrado&quot;)})
+    public ResponseEntity&lt;Void&gt; eliminarHorario(@PathVariable Long id) {
+<span class="fc" id="L86">        horarioService.eliminarHorario(id);</span>
+<span class="fc" id="L87">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

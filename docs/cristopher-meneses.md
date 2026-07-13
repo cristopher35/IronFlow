@@ -22,15 +22,6 @@ Responsable de los servicios de socios, membresias, pagos y discovery-server/Eur
 - Comunicacion de payment-service con membership-service.
 - Registro y descubrimiento de servicios mediante Eureka.
 
-## Commits relevantes
-
-- `fa3bc36` - Swagger, HATEOAS, DataFaker y tests unitarios en memberService.
-- `ea0ab32` - Swagger y tests de reglas de negocio en MiembroController.
-- `23422ec` - membership-service con configuracion corregida, Swagger y tests unitarios.
-- `a9605ac` - payment-service con Swagger, tests unitarios y comunicacion REST corregida.
-- `2175c95` - validacion de RUT/email duplicados al actualizar miembro.
-- `d15ecab` - Dockerfiles, docker-compose y configuracion de base para member/membership/payment.
-
 ## Pruebas asociadas
 
 - `MiembroServiceTest`
@@ -58,5 +49,4 @@ La parte mas delicada fue coordinar `member-service`, `membership-service`, `pay
 - [x] Pruebas unitarias incluidas.
 - [x] Swagger disponible.
 - [x] Dockerfile incluido.
-- [x] Commits propios encontrados en el historial local.
 - [x] Evidencia individual documentada para defensa.

@@ -64,14 +64,28 @@ public class ReservaServiceImpl implements ReservaService {
             throw new IllegalArgumentException("El cliente ya posee una reserva activa para esta clase.");
         }
 
+        try {
+            classClient.reservarCupo(request.horarioId());
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            log.warn("No fue posible reservar cupo para horario id: {}", request.horarioId());
+            throw new IllegalArgumentException("No fue posible reservar cupo para el horario solicitado: " + e.getMessage());
+        }
+
         Reserva nuevaReserva = Reserva.builder()
                 .horarioId(request.horarioId())
                 .miembroId(request.miembroId())
                 .build();
 
-        Reserva saved = reservaRepository.save(nuevaReserva);
-        log.info("Reserva creada exitosamente con ID: {}", saved.getId());
-        return mapToResponse(saved);
+        try {
+            Reserva saved = reservaRepository.save(nuevaReserva);
+            log.info("Reserva creada exitosamente con ID: {}", saved.getId());
+            return mapToResponse(saved);
+        } catch (RuntimeException e) {
+            classClient.liberarCupo(request.horarioId());
+            throw e;
+        }
     }
 
     @Override
@@ -119,6 +133,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         reserva.setEstado("CANCELADA");
         Reserva updated = reservaRepository.save(reserva);
+        classClient.liberarCupo(reserva.getHorarioId());
         log.info("Reserva ID: {} cambiada a estado CANCELADA", id);
         return mapToResponse(updated);
     }

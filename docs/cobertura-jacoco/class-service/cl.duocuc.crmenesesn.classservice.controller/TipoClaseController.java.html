@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TipoClaseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">class-service</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.classservice.controller</a> &gt; <span class="el_source">TipoClaseController.java</span></div><h1>TipoClaseController.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.classservice.controller;
+
+import cl.duocuc.crmenesesn.classservice.dto.TipoClaseRequest;
+import cl.duocuc.crmenesesn.classservice.dto.TipoClaseResponse;
+import cl.duocuc.crmenesesn.classservice.service.TipoClaseService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+@RestController
+@RequestMapping(&quot;/api/classes&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Tipos de clase&quot;, description = &quot;Catálogo de disciplinas ofrecidas&quot;)
+public class TipoClaseController {
+
+    private final TipoClaseService tipoClaseService;
+
+    @PostMapping
+    @Operation(summary = &quot;Crear tipo de clase&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;201&quot;, description = &quot;Tipo de clase creado&quot;), @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Nombre duplicado&quot;)})
+    public ResponseEntity&lt;TipoClaseResponse&gt; crearTipoClase(@Valid @RequestBody TipoClaseRequest request) {
+<span class="fc" id="L30">        return ResponseEntity.status(HttpStatus.CREATED).body(tipoClaseService.crearTipoClase(request));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Buscar tipo de clase por ID&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Tipo de clase encontrado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo de clase no encontrado&quot;)})
+    public ResponseEntity&lt;TipoClaseResponse&gt; obtenerTipoClasePorId(@PathVariable Long id) {
+<span class="fc" id="L37">        return ResponseEntity.ok(tipoClaseService.obtenerTipoClasePorId(id));</span>
+    }
+
+    @GetMapping
+    @Operation(summary = &quot;Listar tipos de clase&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Listado obtenido&quot;)})
+    public ResponseEntity&lt;List&lt;TipoClaseResponse&gt;&gt; obtenerTodosLosTiposClase() {
+<span class="fc" id="L44">        return ResponseEntity.ok(tipoClaseService.obtenerTodosLosTiposClase());</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Actualizar tipo de clase&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;200&quot;, description = &quot;Tipo de clase actualizado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo de clase no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Conflicto de negocio&quot;)})
+    public ResponseEntity&lt;TipoClaseResponse&gt; actualizarTipoClase(@PathVariable Long id, @Valid @RequestBody TipoClaseRequest request) {
+<span class="fc" id="L51">        return ResponseEntity.ok(tipoClaseService.actualizarTipoClase(id, request));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Desactivar tipo de clase&quot;, description = &quot;Rechaza la baja cuando existen horarios activos&quot;)
+    @ApiResponses({@ApiResponse(responseCode = &quot;204&quot;, description = &quot;Tipo de clase desactivado&quot;), @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Tipo de clase no encontrado&quot;), @ApiResponse(responseCode = &quot;409&quot;, description = &quot;Existen horarios activos&quot;)})
+    public ResponseEntity&lt;Void&gt; eliminarTipoClase(@PathVariable Long id) {
+<span class="fc" id="L58">        tipoClaseService.eliminarTipoClase(id);</span>
+<span class="fc" id="L59">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

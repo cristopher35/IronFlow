@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntrenadorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">trainer-service</a> &gt; <a href="index.source.html" class="el_package">com.ironflow.trainerservice.service</a> &gt; <span class="el_source">EntrenadorService.java</span></div><h1>EntrenadorService.java</h1><pre class="source lang-java linenums">package com.ironflow.trainerservice.service;
+
+import com.ironflow.trainerservice.dto.EntrenadorRequest;
+import com.ironflow.trainerservice.dto.EntrenadorResponse;
+import com.ironflow.trainerservice.exception.RecursoNoEncontradoException;
+import com.ironflow.trainerservice.model.Entrenador;
+import com.ironflow.trainerservice.repository.EntrenadorRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L17">@Slf4j</span>
+public class EntrenadorService {
+
+    private final EntrenadorRepository entrenadorRepository;
+
+    @Transactional
+    public EntrenadorResponse crearEntrenador(EntrenadorRequest request) {
+<span class="fc" id="L24">        log.info(&quot;Registrando entrenador: {}&quot;, request.getNombre());</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (entrenadorRepository.existsByCorreoIgnoreCase(request.getCorreo())) {</span>
+<span class="fc" id="L27">            log.warn(&quot;Ya existe un entrenador con correo: {}&quot;, request.getCorreo());</span>
+<span class="fc" id="L28">            throw new IllegalArgumentException(&quot;Ya existe un entrenador con el correo: &quot; + request.getCorreo());</span>
+        }
+
+<span class="fc" id="L31">        Entrenador entrenador = Entrenador.builder()</span>
+<span class="fc" id="L32">                .nombre(request.getNombre())</span>
+<span class="fc" id="L33">                .especialidad(request.getEspecialidad())</span>
+<span class="fc" id="L34">                .aniosExperiencia(request.getAniosExperiencia())</span>
+<span class="fc" id="L35">                .telefono(request.getTelefono())</span>
+<span class="fc" id="L36">                .correo(request.getCorreo())</span>
+<span class="fc" id="L37">                .estado(request.getEstado().toUpperCase())</span>
+<span class="fc" id="L38">                .activo(&quot;ACTIVO&quot;.equalsIgnoreCase(request.getEstado()))</span>
+<span class="fc" id="L39">                .build();</span>
+
+<span class="fc" id="L41">        Entrenador guardado = entrenadorRepository.save(entrenador);</span>
+<span class="fc" id="L42">        log.info(&quot;Entrenador registrado con ID: {}&quot;, guardado.getId());</span>
+<span class="fc" id="L43">        return mapearRespuesta(guardado);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;EntrenadorResponse&gt; listarEntrenadores() {
+<span class="fc" id="L48">        log.info(&quot;Listando todos los entrenadores&quot;);</span>
+<span class="fc" id="L49">        return entrenadorRepository.findByActivoTrue()</span>
+<span class="fc" id="L50">                .stream()</span>
+<span class="fc" id="L51">                .map(this::mapearRespuesta)</span>
+<span class="fc" id="L52">                .toList();</span>
+    }
+
+    @Transactional(readOnly = true)
+    public EntrenadorResponse buscarPorId(Long id) {
+<span class="fc" id="L57">        log.info(&quot;Buscando entrenador con id: {}&quot;, id);</span>
+<span class="fc" id="L58">        Entrenador entrenador = entrenadorRepository.findById(id)</span>
+<span class="fc" id="L59">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L60">                    log.warn(&quot;Entrenador no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L61">                    return new RecursoNoEncontradoException(&quot;No existe un entrenador con id &quot; + id);</span>
+                });
+<span class="fc" id="L63">        return mapearRespuesta(entrenador);</span>
+    }
+
+    @Transactional
+    public EntrenadorResponse actualizarEntrenador(Long id, EntrenadorRequest request) {
+<span class="fc" id="L68">        log.info(&quot;Actualizando entrenador con id: {}&quot;, id);</span>
+<span class="fc" id="L69">        Entrenador entrenador = entrenadorRepository.findById(id)</span>
+<span class="fc" id="L70">                .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L71">                    log.warn(&quot;Entrenador no encontrado con id: {}&quot;, id);</span>
+<span class="nc" id="L72">                    return new RecursoNoEncontradoException(&quot;No existe un entrenador con id &quot; + id);</span>
+                });
+
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (entrenador.getEstado().equals(&quot;INACTIVO&quot;)) {</span>
+<span class="nc" id="L76">            log.warn(&quot;Intento de actualizar entrenador INACTIVO con id: {}&quot;, id);</span>
+<span class="nc" id="L77">            throw new IllegalArgumentException(&quot;No se puede actualizar un entrenador INACTIVO&quot;);</span>
+        }
+<span class="fc bfc" id="L79" title="All 2 branches covered.">        if (entrenadorRepository.existsByCorreoIgnoreCaseAndIdNot(request.getCorreo(), id)) {</span>
+<span class="fc" id="L80">            throw new IllegalArgumentException(&quot;Ya existe un entrenador con el correo: &quot; + request.getCorreo());</span>
+        }
+
+<span class="fc" id="L83">        entrenador.setNombre(request.getNombre());</span>
+<span class="fc" id="L84">        entrenador.setEspecialidad(request.getEspecialidad());</span>
+<span class="fc" id="L85">        entrenador.setAniosExperiencia(request.getAniosExperiencia());</span>
+<span class="fc" id="L86">        entrenador.setTelefono(request.getTelefono());</span>
+<span class="fc" id="L87">        entrenador.setCorreo(request.getCorreo());</span>
+<span class="fc" id="L88">        entrenador.setEstado(request.getEstado().toUpperCase());</span>
+<span class="fc" id="L89">        entrenador.setActivo(&quot;ACTIVO&quot;.equalsIgnoreCase(request.getEstado()));</span>
+
+<span class="fc" id="L91">        Entrenador actualizado = entrenadorRepository.save(entrenador);</span>
+<span class="fc" id="L92">        log.info(&quot;Entrenador actualizado con ID: {}&quot;, actualizado.getId());</span>
+<span class="fc" id="L93">        return mapearRespuesta(actualizado);</span>
+    }
+
+    @Transactional
+    public void eliminarEntrenador(Long id) {
+<span class="fc" id="L98">        log.info(&quot;Desactivando entrenador con id: {}&quot;, id);</span>
+<span class="fc" id="L99">        Entrenador entrenador = entrenadorRepository.findById(id)</span>
+<span class="fc" id="L100">                .orElseThrow(() -&gt; {</span>
+<span class="fc" id="L101">                    log.warn(&quot;Entrenador no encontrado con id: {}&quot;, id);</span>
+<span class="fc" id="L102">                    return new RecursoNoEncontradoException(&quot;No existe un entrenador con id &quot; + id);</span>
+                });
+<span class="fc" id="L104">        entrenador.setEstado(&quot;INACTIVO&quot;);</span>
+<span class="fc" id="L105">        entrenador.setActivo(false);</span>
+<span class="fc" id="L106">        entrenadorRepository.save(entrenador);</span>
+<span class="fc" id="L107">        log.info(&quot;Entrenador desactivado con id: {}&quot;, id);</span>
+<span class="fc" id="L108">    }</span>
+
+    @Transactional(readOnly = true)
+    public List&lt;EntrenadorResponse&gt; listarPorEspecialidad(String especialidad) {
+<span class="fc" id="L112">        log.info(&quot;Listando entrenadores por especialidad: {}&quot;, especialidad);</span>
+<span class="fc" id="L113">        return entrenadorRepository.findByEspecialidadIgnoreCaseAndActivoTrue(especialidad)</span>
+<span class="fc" id="L114">                .stream()</span>
+<span class="fc" id="L115">                .map(this::mapearRespuesta)</span>
+<span class="fc" id="L116">                .toList();</span>
+    }
+
+    private EntrenadorResponse mapearRespuesta(Entrenador entrenador) {
+<span class="fc" id="L120">        return new EntrenadorResponse(</span>
+<span class="fc" id="L121">                entrenador.getId(),</span>
+<span class="fc" id="L122">                entrenador.getNombre(),</span>
+<span class="fc" id="L123">                entrenador.getEspecialidad(),</span>
+<span class="fc" id="L124">                entrenador.getAniosExperiencia(),</span>
+<span class="fc" id="L125">                entrenador.getTelefono(),</span>
+<span class="fc" id="L126">                entrenador.getCorreo(),</span>
+<span class="fc" id="L127">                entrenador.getEstado(),</span>
+<span class="fc" id="L128">                entrenador.getActivo()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

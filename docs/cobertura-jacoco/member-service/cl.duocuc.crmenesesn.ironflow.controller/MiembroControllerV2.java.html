@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MiembroControllerV2.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">IronFlow</a> &gt; <a href="index.source.html" class="el_package">cl.duocuc.crmenesesn.ironflow.controller</a> &gt; <span class="el_source">MiembroControllerV2.java</span></div><h1>MiembroControllerV2.java</h1><pre class="source lang-java linenums">package cl.duocuc.crmenesesn.ironflow.controller;
+
+import cl.duocuc.crmenesesn.ironflow.assemblers.MiembroModelAssembler;
+import cl.duocuc.crmenesesn.ironflow.dto.MiembroRequest;
+import cl.duocuc.crmenesesn.ironflow.dto.MiembroResponse;
+import cl.duocuc.crmenesesn.ironflow.service.MiembroService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
+@RestController
+@RequestMapping(&quot;/api/v2/members&quot;)
+@RequiredArgsConstructor
+@Tag(name = &quot;Members V2&quot;, description = &quot;Gestión de miembros con soporte HATEOAS&quot;)
+public class MiembroControllerV2 {
+
+    private final MiembroService miembroService;
+    private final MiembroModelAssembler assembler;
+
+    @GetMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    @Operation(summary = &quot;Obtener todos los miembros&quot;, description = &quot;Retorna lista de miembros con enlaces HATEOAS&quot;)
+    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista obtenida exitosamente&quot;)
+    public CollectionModel&lt;EntityModel&lt;MiembroResponse&gt;&gt; obtenerTodosLosMiembros() {
+<span class="fc" id="L39">        List&lt;EntityModel&lt;MiembroResponse&gt;&gt; miembros = miembroService.obtenerTodosLosMiembros()</span>
+<span class="fc" id="L40">                .stream().map(assembler::toModel).collect(Collectors.toList());</span>
+<span class="fc" id="L41">        return CollectionModel.of(miembros,</span>
+<span class="fc" id="L42">                linkTo(methodOn(MiembroControllerV2.class).obtenerTodosLosMiembros()).withSelfRel());</span>
+    }
+
+    @GetMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    @Operation(summary = &quot;Obtener miembro por ID&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Miembro encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Miembro no encontrado&quot;)
+    })
+    public EntityModel&lt;MiembroResponse&gt; obtenerMiembroPorId(
+            @Parameter(description = &quot;ID del miembro&quot;, required = true) @PathVariable Long id) {
+<span class="fc" id="L53">        return assembler.toModel(miembroService.obtenerMiembroPorId(id));</span>
+    }
+
+    @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    @Operation(summary = &quot;Crear un nuevo miembro&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Miembro creado exitosamente&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Datos inválidos&quot;)
+    })
+    public ResponseEntity&lt;EntityModel&lt;MiembroResponse&gt;&gt; crearMiembro(@Valid @RequestBody MiembroRequest request) {
+<span class="fc" id="L63">        MiembroResponse created = miembroService.crearMiembro(request);</span>
+<span class="fc" id="L64">        return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(created));</span>
+    }
+
+    @PutMapping(value = &quot;/{id}&quot;, produces = MediaTypes.HAL_JSON_VALUE)
+    @Operation(summary = &quot;Actualizar un miembro existente&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Miembro actualizado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Miembro no encontrado&quot;)
+    })
+    public EntityModel&lt;MiembroResponse&gt; actualizarMiembro(
+            @PathVariable Long id, @Valid @RequestBody MiembroRequest request) {
+<span class="fc" id="L75">        return assembler.toModel(miembroService.actualizarMiembro(id, request));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Eliminar un miembro&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Miembro eliminado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Miembro no encontrado&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; eliminarMiembro(@PathVariable Long id) {
+<span class="fc" id="L85">        miembroService.eliminarMiembro(id);</span>
+<span class="fc" id="L86">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

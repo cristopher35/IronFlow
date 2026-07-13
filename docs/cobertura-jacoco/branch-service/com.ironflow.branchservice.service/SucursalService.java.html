@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SucursalService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">branch-service</a> &gt; <a href="index.source.html" class="el_package">com.ironflow.branchservice.service</a> &gt; <span class="el_source">SucursalService.java</span></div><h1>SucursalService.java</h1><pre class="source lang-java linenums">package com.ironflow.branchservice.service;
+
+import com.ironflow.branchservice.dto.SucursalRequest;
+import com.ironflow.branchservice.dto.SucursalResponse;
+import com.ironflow.branchservice.exception.RecursoNoEncontradoException;
+import com.ironflow.branchservice.model.Sucursal;
+import com.ironflow.branchservice.repository.SucursalRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+<span class="fc" id="L17">@Slf4j</span>
+public class SucursalService {
+
+    private final SucursalRepository sucursalRepository;
+
+    @Transactional
+    public SucursalResponse crearSucursal(SucursalRequest request) {
+<span class="fc" id="L24">        log.info(&quot;Registrando sucursal: {}&quot;, request.getNombre());</span>
+
+<span class="fc" id="L26">        Sucursal sucursal = Sucursal.builder()</span>
+<span class="fc" id="L27">                .nombre(request.getNombre())</span>
+<span class="fc" id="L28">                .ciudad(request.getCiudad())</span>
+<span class="fc" id="L29">                .direccion(request.getDireccion())</span>
+<span class="fc" id="L30">                .telefono(request.getTelefono())</span>
+<span class="fc" id="L31">                .horarioAtencion(request.getHorarioAtencion())</span>
+<span class="fc" id="L32">                .estado(request.getEstado())</span>
+<span class="fc" id="L33">                .activa(&quot;ACTIVA&quot;.equalsIgnoreCase(request.getEstado()))</span>
+<span class="fc" id="L34">                .build();</span>
+
+<span class="fc" id="L36">        Sucursal guardada = sucursalRepository.save(sucursal);</span>
+
+<span class="fc" id="L38">        log.info(&quot;Sucursal registrada con ID: {}&quot;, guardada.getId());</span>
+<span class="fc" id="L39">        return mapearRespuesta(guardada);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;SucursalResponse&gt; listarSucursales() {
+<span class="fc" id="L44">        return sucursalRepository.findAll()</span>
+<span class="fc" id="L45">                .stream()</span>
+<span class="fc" id="L46">                .map(this::mapearRespuesta)</span>
+<span class="fc" id="L47">                .toList();</span>
+    }
+
+    @Transactional(readOnly = true)
+    public SucursalResponse buscarPorId(Long id) {
+<span class="fc" id="L52">        Sucursal sucursal = sucursalRepository.findById(id)</span>
+<span class="fc" id="L53">                .orElseThrow(() -&gt; new RecursoNoEncontradoException(&quot;No existe una sucursal con id &quot; + id));</span>
+
+<span class="fc" id="L55">        return mapearRespuesta(sucursal);</span>
+    }
+
+    @Transactional
+    public SucursalResponse actualizarSucursal(Long id, SucursalRequest request) {
+<span class="fc" id="L60">        Sucursal sucursal = sucursalRepository.findById(id)</span>
+<span class="fc" id="L61">                .orElseThrow(() -&gt; new RecursoNoEncontradoException(&quot;No existe una sucursal con id &quot; + id));</span>
+
+<span class="fc" id="L63">        sucursal.setNombre(request.getNombre());</span>
+<span class="fc" id="L64">        sucursal.setCiudad(request.getCiudad());</span>
+<span class="fc" id="L65">        sucursal.setDireccion(request.getDireccion());</span>
+<span class="fc" id="L66">        sucursal.setTelefono(request.getTelefono());</span>
+<span class="fc" id="L67">        sucursal.setHorarioAtencion(request.getHorarioAtencion());</span>
+<span class="fc" id="L68">        sucursal.setEstado(request.getEstado());</span>
+<span class="fc" id="L69">        sucursal.setActiva(&quot;ACTIVA&quot;.equalsIgnoreCase(request.getEstado()));</span>
+
+<span class="fc" id="L71">        Sucursal actualizada = sucursalRepository.save(sucursal);</span>
+<span class="fc" id="L72">        log.info(&quot;Sucursal actualizada con ID: {}&quot;, actualizada.getId());</span>
+
+<span class="fc" id="L74">        return mapearRespuesta(actualizada);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public List&lt;SucursalResponse&gt; listarPorCiudad(String ciudad) {
+<span class="fc" id="L79">        return sucursalRepository.findByCiudadIgnoreCase(ciudad)</span>
+<span class="fc" id="L80">                .stream()</span>
+<span class="fc" id="L81">                .map(this::mapearRespuesta)</span>
+<span class="fc" id="L82">                .toList();</span>
+    }
+
+    private SucursalResponse mapearRespuesta(Sucursal sucursal) {
+<span class="fc" id="L86">        return new SucursalResponse(</span>
+<span class="fc" id="L87">                sucursal.getId(),</span>
+<span class="fc" id="L88">                sucursal.getNombre(),</span>
+<span class="fc" id="L89">                sucursal.getCiudad(),</span>
+<span class="fc" id="L90">                sucursal.getDireccion(),</span>
+<span class="fc" id="L91">                sucursal.getTelefono(),</span>
+<span class="fc" id="L92">                sucursal.getHorarioAtencion(),</span>
+<span class="fc" id="L93">                sucursal.getEstado(),</span>
+<span class="fc" id="L94">                sucursal.getActiva()</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>
