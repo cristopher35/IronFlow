@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="KubernetesApiProvider"><![CDATA[{}]]></component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/class-service/class-service/pom.xml" />
+        <option value="$PROJECT_DIR$/memberService/memberService/IronFlow/pom.xml" />
+        <option value="$PROJECT_DIR$/branch-service/branch-service/pom.xml" />
+        <option value="$PROJECT_DIR$/booking-service/booking-service/pom.xml" />
+        <option value="$PROJECT_DIR$/Payment-service/Payment-service/payment-service/pom.xml" />
+        <option value="$PROJECT_DIR$/trainer-service/trainer-service/pom.xml" />
+        <option value="$PROJECT_DIR$/equipment-service/equipment-service/equipment-service/pom.xml" />
+        <option value="$PROJECT_DIR$/MemberShip-service/MemberShip-service/MemberShip-service/pom.xml" />
+        <option value="$PROJECT_DIR$/notification-service/notification-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-26" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
