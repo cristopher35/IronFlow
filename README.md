@@ -20,6 +20,12 @@ Sistema de gestión integral para gimnasios basado en una **arquitectura de micr
 
 La solución está compuesta por **10 microservicios independientes**, cada uno con su propia base de datos relacional, comunicándose entre sí mediante **API REST** con clientes como **RestTemplate** y **WebClient**, siguiendo el patrón **CSR (Controller-Service-Repository)**.
 
+### Documentación de procesos
+
+La documentación de los procesos realizados, avances y evidencias del proyecto está disponible en Notion:
+
+- [Documentación IronFlow en Notion](https://app.notion.com/p/1864c76dde96410b87c95ae2745c41b6?v=39907c28bf6e80f9893c000c9c4ca13e)
+
 ---
 
 ## 🏗️ Arquitectura del Sistema
