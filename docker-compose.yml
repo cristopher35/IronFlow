@@ -1,6 +1,7 @@
 services:
   discovery-server:
-    build: ./discovery-server
+    build:
+      context: ./microservicios-ironflow/discovery-server
     container_name: discovery-server
     environment:
       EUREKA_DEFAULT_ZONE: http://discovery-server:8761/eureka/
@@ -11,7 +12,8 @@ services:
       - ironflow-net
 
   member-service:
-    build: ./memberService/memberService/IronFlow
+    build:
+      context: ./microservicios-ironflow/memberService/memberService/IronFlow
     container_name: member-service
     depends_on:
       - discovery-server
@@ -24,7 +26,8 @@ services:
       - ironflow-net
 
   membership-service:
-    build: ./MemberShip-service
+    build:
+      context: ./microservicios-ironflow/Membership-service
     container_name: membership-service
     depends_on:
       - discovery-server
@@ -39,7 +42,8 @@ services:
       - ironflow-net
 
   payment-service:
-    build: ./Payment-service
+    build:
+      context: ./microservicios-ironflow/Payment-service
     container_name: payment-service
     depends_on:
       - discovery-server
@@ -54,7 +58,8 @@ services:
       - ironflow-net
 
   booking-service:
-    build: ./booking-service/booking-service
+    build:
+      context: ./microservicios-ironflow/booking-service/booking-service
     container_name: booking-service
     depends_on:
       - discovery-server
@@ -71,7 +76,8 @@ services:
       - ironflow-net
 
   class-service:
-    build: ./class-service/class-service
+    build:
+      context: ./microservicios-ironflow/class-service/class-service
     container_name: class-service
     depends_on:
       - discovery-server
@@ -86,7 +92,8 @@ services:
       - ironflow-net
 
   trainer-service:
-    build: ./trainer-service/trainer-service
+    build:
+      context: ./microservicios-ironflow/trainer-service/trainer-service
     container_name: trainer-service
     depends_on:
       - discovery-server
@@ -99,7 +106,8 @@ services:
       - ironflow-net
 
   access-service:
-    build: ./access-service/access-service
+    build:
+      context: ./microservicios-ironflow/access-service/access-service
     container_name: access-service
     depends_on:
       - discovery-server
@@ -114,7 +122,8 @@ services:
       - ironflow-net
 
   equipment-service:
-    build: ./equipment-service/equipment-service/equipment-service
+    build:
+      context: ./microservicios-ironflow/equipment-service/equipment-service/equipment-service
     container_name: equipment-service
     depends_on:
       - discovery-server
@@ -127,7 +136,8 @@ services:
       - ironflow-net
 
   branch-service:
-    build: ./branch-service/branch-service
+    build:
+      context: ./microservicios-ironflow/branch-service/branch-service
     container_name: branch-service
     depends_on:
       - discovery-server
@@ -140,7 +150,8 @@ services:
       - ironflow-net
 
   notification-service:
-    build: ./notification-service/notification-service
+    build:
+      context: ./microservicios-ironflow/notification-service/notification-service
     container_name: notification-service
     depends_on:
       - discovery-server
@@ -155,7 +166,8 @@ services:
       - ironflow-net
 
   api-gateway:
-    build: ./api-gateway
+    build:
+      context: ./microservicios-ironflow/api-gateway
     container_name: api-gateway
     depends_on:
       - discovery-server

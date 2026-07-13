@@ -2,7 +2,7 @@ services:
   - type: web
     name: ironflow-discovery-server
     runtime: java
-    rootDir: discovery-server
+    rootDir: microservicios-ironflow/discovery-server
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -17,7 +17,7 @@ services:
   - type: web
     name: ironflow-api-gateway
     runtime: java
-    rootDir: api-gateway
+    rootDir: microservicios-ironflow/api-gateway
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -50,7 +50,7 @@ services:
   - type: web
     name: ironflow-member-service
     runtime: java
-    rootDir: memberService/memberService/IronFlow
+    rootDir: microservicios-ironflow/memberService/memberService/IronFlow
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -75,7 +75,7 @@ services:
   - type: web
     name: ironflow-membership-service
     runtime: java
-    rootDir: MemberShip-service
+    rootDir: microservicios-ironflow/Membership-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -102,7 +102,7 @@ services:
   - type: web
     name: ironflow-payment-service
     runtime: java
-    rootDir: Payment-service
+    rootDir: microservicios-ironflow/Payment-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -129,7 +129,7 @@ services:
   - type: web
     name: ironflow-class-service
     runtime: java
-    rootDir: class-service/class-service
+    rootDir: microservicios-ironflow/class-service/class-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -158,7 +158,7 @@ services:
   - type: web
     name: ironflow-booking-service
     runtime: java
-    rootDir: booking-service/booking-service
+    rootDir: microservicios-ironflow/booking-service/booking-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -189,7 +189,7 @@ services:
   - type: web
     name: ironflow-trainer-service
     runtime: java
-    rootDir: trainer-service/trainer-service
+    rootDir: microservicios-ironflow/trainer-service/trainer-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -214,7 +214,7 @@ services:
   - type: web
     name: ironflow-access-service
     runtime: java
-    rootDir: access-service/access-service
+    rootDir: microservicios-ironflow/access-service/access-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -243,7 +243,7 @@ services:
   - type: web
     name: ironflow-equipment-service
     runtime: java
-    rootDir: equipment-service/equipment-service/equipment-service
+    rootDir: microservicios-ironflow/equipment-service/equipment-service/equipment-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -268,7 +268,7 @@ services:
   - type: web
     name: ironflow-branch-service
     runtime: java
-    rootDir: branch-service/branch-service
+    rootDir: microservicios-ironflow/branch-service/branch-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health
@@ -295,7 +295,7 @@ services:
   - type: web
     name: ironflow-notification-service
     runtime: java
-    rootDir: notification-service/notification-service
+    rootDir: microservicios-ironflow/notification-service/notification-service
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/*.jar
     healthCheckPath: /actuator/health

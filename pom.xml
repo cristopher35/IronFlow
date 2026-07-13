@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ironflow</groupId>
+    <artifactId>ironflow-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <name>IronFlow</name>
+    <description>Agregador Maven de microservicios IronFlow</description>
+
+    <modules>
+        <module>microservicios-ironflow/access-service/access-service</module>
+        <module>microservicios-ironflow/api-gateway</module>
+        <module>microservicios-ironflow/booking-service/booking-service</module>
+        <module>microservicios-ironflow/branch-service/branch-service</module>
+        <module>microservicios-ironflow/class-service/class-service</module>
+        <module>microservicios-ironflow/discovery-server</module>
+        <module>microservicios-ironflow/equipment-service/equipment-service/equipment-service</module>
+        <module>microservicios-ironflow/memberService/memberService/IronFlow</module>
+        <module>microservicios-ironflow/Membership-service</module>
+        <module>microservicios-ironflow/notification-service/notification-service</module>
+        <module>microservicios-ironflow/Payment-service</module>
+        <module>microservicios-ironflow/trainer-service/trainer-service</module>
+    </modules>
+</project>
