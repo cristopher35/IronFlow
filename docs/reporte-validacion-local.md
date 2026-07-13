@@ -1,6 +1,7 @@
 # Reporte de validacion local
 
 Fecha de validacion local: 2026-07-12.
+Revalidacion final de entrega: 2026-07-13.
 
 ## Resultado general
 
@@ -15,6 +16,7 @@ Fecha de validacion local: 2026-07-12.
 | Cobertura JaCoCo minima por modulo | OK, 12/12 modulos sobre 80% de instrucciones |
 | Docker Compose ejecutado localmente | OK: `docker compose up --build -d` construyo y levanto 12/12 contenedores |
 | Health `GET http://localhost:8080/actuator/health` | OK: HTTP 200, `{"groups":["liveness","readiness"],"status":"UP"}` |
+| Revalidacion final 2026-07-13 | OK: 12/12 contenedores `Up`, Gateway health 200, rutas 200 y seguridad 401/403 |
 
 ## Servicios probados
 
@@ -123,3 +125,31 @@ Nota: Compose no define `healthcheck`, por eso el estado real aparece como `Up` 
 - El API Gateway agrega trazabilidad HTTP con `X-Request-Id`.
 - El despliegue Render no fue ejecutado desde este equipo; queda documentado en `docs/render-despliegue.md` para completarlo con una cuenta Render.
 - Se agregaron migraciones Flyway en los 10 servicios de negocio y los perfiles persistentes quedaron con `ddl-auto=validate`.
+
+## Revalidacion final de entrega 2026-07-13
+
+Comandos ejecutados desde la raiz del repositorio:
+
+```bash
+docker compose config
+docker compose ps
+curl -i http://localhost:8080/actuator/health
+curl -i -u admin:admin123 http://localhost:8080/member-app/api/members
+curl -i -u socio:socio123 http://localhost:8080/class-app/api/schedules
+curl -i -u admin:admin123 http://localhost:8080/trainer-app/api/entrenadores
+curl -i http://localhost:8080/member-app/api/members
+curl -i -u socio:socio123 http://localhost:8080/trainer-app/api/entrenadores
+```
+
+Resultado observado:
+
+```text
+docker compose config -> OK
+docker compose ps -> 12/12 contenedores Up
+GET /actuator/health -> HTTP 200, {"groups":["liveness","readiness"],"status":"UP"}
+GET /member-app/api/members con admin:admin123 -> HTTP 200, []
+GET /class-app/api/schedules con socio:socio123 -> HTTP 200, []
+GET /trainer-app/api/entrenadores con admin:admin123 -> HTTP 200, []
+GET /member-app/api/members sin credenciales -> HTTP 401
+GET /trainer-app/api/entrenadores con socio:socio123 -> HTTP 403
+```
