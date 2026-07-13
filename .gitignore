@@ -7,3 +7,4 @@ output/
 tmp/
 __MACOSX/
 .DS_Store
+docs/cobertura-jacoco/

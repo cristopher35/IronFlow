@@ -1,9 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-equipment-service,com.ironflow.equipmentservice.dto,EquipoResponse,0,24,0,0,0,1,0,1,0,1
-equipment-service,com.ironflow.equipmentservice.config,OpenApiConfig,0,17,0,0,0,3,0,2,0,2
-equipment-service,com.ironflow.equipmentservice.service,EquipoService,11,242,2,14,1,62,3,17,1,11
-equipment-service,com.ironflow.equipmentservice.controller,EquipoController,0,54,0,0,0,12,0,6,0,6
-equipment-service,com.ironflow.equipmentservice,EquipmentServiceApplication,5,3,0,0,2,1,1,1,1,1
-equipment-service,com.ironflow.equipmentservice.exception,RecursoNoEncontradoException,0,4,0,0,0,2,0,1,0,1
-equipment-service,com.ironflow.equipmentservice.exception,ManejadorGlobalExcepciones,32,46,2,0,5,9,2,5,1,5
-equipment-service,com.ironflow.equipmentservice.exception,ErrorApi,0,21,0,0,0,1,0,1,0,1
