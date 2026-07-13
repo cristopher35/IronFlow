@@ -178,3 +178,24 @@ Content-Type: application/json
 
 ### Endpoint inexistente - caso 404 esperado
 GET {{gateway}}/member-app/api/members/999999
+
+### Seguridad (Gateway)
+
+### 401 sin credenciales - ruta ADMIN protegida
+# Esperado: 401 Unauthorized
+GET {{gateway}}/branch-app/api/sucursales
+
+### 403 con rol insuficiente - SOCIO intentando acceder a ruta ADMIN
+# Esperado: 403 Forbidden
+GET {{gateway}}/branch-app/api/sucursales
+Authorization: Basic c29jaW86c29jaW8xMjM=
+
+### 200 con rol correcto - ADMIN accede a sucursales
+# Esperado: 200 OK
+GET {{gateway}}/branch-app/api/sucursales
+Authorization: Basic YWRtaW46YWRtaW4xMjM=
+
+### 200 con rol correcto - SOCIO accede a reservas
+# Esperado: 200 OK
+GET {{gateway}}/booking-app/api/bookings
+Authorization: Basic c29jaW86c29jaW8xMjM=
