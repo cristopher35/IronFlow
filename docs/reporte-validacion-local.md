@@ -30,7 +30,7 @@ Fecha de validacion local: 2026-07-12.
 | equipment-service | `./mvnw test` | OK |
 | branch-service | `./mvnw test` | OK |
 | notification-service | `./mvnw test` | OK |
-| api-gateway | `../MemberShip-service/mvnw test` | OK |
+| api-gateway | `./mvnw test` | OK |
 | discovery-server | `./mvnw test` | OK |
 
 ## Cobertura Jacoco
@@ -59,7 +59,7 @@ curl -i -u socio:socio123 http://localhost:8080/class-app/api/schedules
 curl -i -u admin:admin123 http://localhost:8080/trainer-app/api/entrenadores
 curl -i http://localhost:8080/member-app/api/members
 curl -i -u socio:socio123 http://localhost:8080/trainer-app/api/entrenadores
-cd api-gateway && ./mvnw test
+cd microservicios-ironflow/api-gateway && ./mvnw test
 docker compose up --build -d api-gateway
 curl -i -H 'X-Request-Id: defensa-ironflow-final' http://localhost:8080/actuator/health
 curl -i http://localhost:8080/actuator/health

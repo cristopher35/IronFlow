@@ -25,10 +25,11 @@ Fecha de generacion local: 2026-07-12.
 ./mvnw org.jacoco:jacoco-maven-plugin:0.8.13:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.13:report -q
 ```
 
-En `api-gateway` se uso el wrapper de `MemberShip-service` porque ese modulo no tenia wrapper propio:
+En `api-gateway` se puede usar su propio wrapper Maven:
 
 ```bash
-../MemberShip-service/mvnw org.jacoco:jacoco-maven-plugin:0.8.13:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.13:report -q
+cd microservicios-ironflow/api-gateway
+./mvnw org.jacoco:jacoco-maven-plugin:0.8.13:prepare-agent test org.jacoco:jacoco-maven-plugin:0.8.13:report -q
 ```
 
 Los 12 modulos quedan sobre 80% de cobertura de instrucciones. Para `discovery-server` se agrego un test de delegacion de `main` para cubrir el punto de entrada sin levantar Eureka de forma innecesaria.

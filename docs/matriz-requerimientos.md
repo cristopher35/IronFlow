@@ -24,7 +24,7 @@
 | RNF-02 | Base independiente por microservicio | No funcional | Implementado | `application*.properties`, `application.yml`, `docker-compose.yml` | Revision de configuracion |
 | RNF-03 | Comunicacion API REST | No funcional | Implementado | RestClient en booking, Feign en payment, WebClient en otros clientes | Pruebas service |
 | RNF-04 | Validacion de entrada | No funcional | Implementado | DTOs con Bean Validation y `@Valid` | Pruebas unitarias |
-| RNF-05 | API Gateway | No funcional | Implementado | `api-gateway/src/main/resources/application.yml` | Gateway test |
+| RNF-05 | API Gateway | No funcional | Implementado | `microservicios-ironflow/api-gateway/src/main/resources/application.yml` | Gateway test |
 | RNF-06 | Swagger/OpenAPI | No funcional | Implementado | `/doc/swagger-ui.html` por servicio | Revision manual |
 | RNF-07 | Docker/Compose | No funcional | Validado localmente end-to-end con perfiles H2 en Compose | `Dockerfile`, `docker-compose.yml`; 12 contenedores `Up` | `docker compose config` OK; `COMPOSE_PARALLEL_LIMIT=1 docker compose up --build -d` OK; curls por Gateway 200/401/403 |
 | RNF-08 | Eureka/discovery | No funcional | Implementado | `discovery-server`, Eureka clients, gateway con `lb://` | `discovery-server` y `api-gateway` tests |

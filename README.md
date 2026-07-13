@@ -103,9 +103,9 @@ git clone https://github.com/cristopher35/IronFlow.git
 cd IronFlow
 ```
 
-2. Entra a la carpeta de un microservicio (por ejemplo `member-service`):
+2. Entra a la carpeta de un microservicio (por ejemplo el servicio de miembros):
 ```bash
-cd member-service
+cd microservicios-ironflow/memberService/memberService/IronFlow
 ```
 
 3. Configura el JAVA_HOME (Windows PowerShell):

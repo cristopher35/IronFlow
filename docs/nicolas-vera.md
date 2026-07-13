@@ -6,10 +6,10 @@ Responsable de clases, reservas, equipamiento y API Gateway.
 
 ## Modulos asociados
 
-- `class-service/class-service`
-- `booking-service/booking-service`
-- `equipment-service/equipment-service/equipment-service`
-- `api-gateway`
+- `microservicios-ironflow/class-service/class-service`
+- `microservicios-ironflow/booking-service/booking-service`
+- `microservicios-ironflow/equipment-service/equipment-service/equipment-service`
+- `microservicios-ironflow/api-gateway`
 
 ## Funcionalidades principales
 

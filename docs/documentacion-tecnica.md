@@ -8,17 +8,17 @@ IronFlow esta organizado como backend de microservicios Spring Boot con separaci
 
 | Ruta | Contenido |
 |---|---|
-| `memberService/memberService/IronFlow` | member-service |
-| `MemberShip-service` | membership-service |
-| `Payment-service` | payment-service |
-| `class-service/class-service` | class-service |
-| `booking-service/booking-service` | booking-service |
-| `trainer-service/trainer-service` | trainer-service |
-| `access-service/access-service` | access-service |
-| `equipment-service/equipment-service/equipment-service` | equipment-service |
-| `branch-service/branch-service` | branch-service |
-| `notification-service/notification-service` | notification-service |
-| `api-gateway` | API Gateway |
+| `microservicios-ironflow/memberService/memberService/IronFlow` | member-service |
+| `microservicios-ironflow/Membership-service` | membership-service |
+| `microservicios-ironflow/Payment-service` | payment-service |
+| `microservicios-ironflow/class-service/class-service` | class-service |
+| `microservicios-ironflow/booking-service/booking-service` | booking-service |
+| `microservicios-ironflow/trainer-service/trainer-service` | trainer-service |
+| `microservicios-ironflow/access-service/access-service` | access-service |
+| `microservicios-ironflow/equipment-service/equipment-service/equipment-service` | equipment-service |
+| `microservicios-ironflow/branch-service/branch-service` | branch-service |
+| `microservicios-ironflow/notification-service/notification-service` | notification-service |
+| `microservicios-ironflow/api-gateway` | API Gateway |
 | `docs` | Documentacion, pruebas REST y defensas |
 | `docker-compose.yml` | Orquestacion local/Docker |
 | `.env.example` | Variables de entorno esperadas sin secretos |
@@ -83,9 +83,9 @@ El `docker-compose.yml` de entrega usa perfil `h2` para levantar los 12 servicio
 Para pruebas unitarias por servicio:
 
 ```bash
-cd memberService/memberService/IronFlow && ./mvnw test
-cd ../../../MemberShip-service && ./mvnw test
-cd ../Payment-service && ./mvnw test
+(cd microservicios-ironflow/memberService/memberService/IronFlow && ./mvnw test)
+(cd microservicios-ironflow/Membership-service && ./mvnw test)
+(cd microservicios-ironflow/Payment-service && ./mvnw test)
 ```
 
 La lista completa de comandos esta en `docs/plan-cierre-feedback.md`.

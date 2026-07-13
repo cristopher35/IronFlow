@@ -6,10 +6,10 @@ Responsable de los servicios de socios, membresias, pagos y discovery-server/Eur
 
 ## Modulos asociados
 
-- `memberService/memberService/IronFlow`
-- `MemberShip-service`
-- `Payment-service`
-- `discovery-server`
+- `microservicios-ironflow/memberService/memberService/IronFlow`
+- `microservicios-ironflow/Membership-service`
+- `microservicios-ironflow/Payment-service`
+- `microservicios-ironflow/discovery-server`
 
 ## Funcionalidades principales
 
