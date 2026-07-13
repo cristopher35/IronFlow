@@ -2,7 +2,7 @@
 
 ## Estado
 
-Blueprint preparado en `render.yaml` para importar en Render. No se hizo despliegue en vivo desde esta maquina porque requiere cuenta Render, repositorio conectado y credenciales reales de base de datos Neon/Supabase. Las URL publicas y variables marcadas como `sync: false` se completan cuando se creen los servicios en la cuenta del equipo.
+Guia preparada para configurar los servicios en Render de forma manual. No se hizo despliegue en vivo desde esta maquina porque requiere cuenta Render, repositorio conectado y credenciales reales de base de datos Neon/Supabase. Las URL publicas y variables externas se completan cuando se creen los servicios en la cuenta del equipo.
 
 Estado local previo al despliegue: Docker Compose fue validado end-to-end el 2026-07-12 con 12/12 contenedores `Up`, Gateway health 200, rutas por Eureka/Gateway 200 y seguridad 401/403.
 
@@ -23,11 +23,9 @@ Estado local previo al despliegue: Docker Compose fue validado end-to-end el 202
 | `ironflow-branch-service` | `microservicios-ironflow/branch-service/branch-service` | Web Service | `8089` |
 | `ironflow-notification-service` | `microservicios-ironflow/notification-service/notification-service` | Web Service | `8090` |
 
-## Blueprint
+## Configuracion sugerida
 
-Archivo listo: `render.yaml`.
-
-Cada servicio usa:
+Cada servicio debe usar:
 
 - Build command: `./mvnw clean package -DskipTests`
 - Start command: `java -jar target/*.jar`
@@ -38,8 +36,8 @@ Cada servicio usa:
 ## Pasos obligatorios para cerrar Render en vivo
 
 1. Subir el proyecto final a GitHub.
-2. En Render, crear un nuevo Blueprint desde `render.yaml`.
-3. Completar variables `sync: false` para cada servicio:
+2. En Render, crear los servicios web usando las rutas indicadas en esta guia.
+3. Completar variables externas para cada servicio:
    - `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
    - `EUREKA_DEFAULT_ZONE` apuntando al discovery server de Render.
    - URLs internas/publicas entre servicios (`MEMBER_SERVICE_URL`, `MEMBERSHIP_SERVICE_URL`, etc.).

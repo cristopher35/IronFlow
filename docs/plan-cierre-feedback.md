@@ -7,7 +7,7 @@
 | FB-03 | Maven wrappers sin permiso de ejecucion local | Se habilitaron wrappers locales | `mvnw` por servicio | Corregido |
 | FB-04 | Tests de membership/payment fallaban por Mockito inline | Se agrego configuracion `mock-maker-subclass` | `src/test/resources/mockito-extensions` | Corregido |
 | FB-05 | Faltaba evidencia documental final | Se agrego carpeta `docs` con matriz, plan, documentacion, pruebas REST y defensas base | `docs/**` | Corregido localmente |
-| FB-06 | Faltaba `.env.example` sin secretos | Se agrego archivo de ejemplo | `.env.example` | Corregido |
+| FB-06 | Variables locales sin secretos versionados | Se mantuvo la configuracion sensible fuera del repositorio | `.gitignore`, `docker-compose.yml` | Corregido |
 | FB-07 | Zip por integrante no servia como entrega final completa | Se preparara zip general con raiz, docs, compose y servicios | `output/entrega-final/` | En validacion |
 | FB-08 | Eureka/discovery requerido por rubrica | Implementado con `discovery-server`, clientes Eureka y gateway `lb://` | Tests OK | Cerrado local |
 | FB-09 | Seguridad/roles requerido por rubrica | Implementado en `api-gateway` con BCrypt y roles `ADMIN`, `SOCIO`, `RECEPCIONISTA` | Tests 401/403 OK | Cerrado local |
@@ -19,7 +19,7 @@
 | FB-17 | Trazabilidad en Gateway | Se agrego filtro `X-Request-Id`, preservando el valor entrante o generando UUID, con pruebas automatizadas | `microservicios-ironflow/api-gateway/src/main/java/com/ironflow/gateway/config/RequestIdFilter.java`, `SecurityConfigTest` | Cerrado local |
 | FB-18 | Limpieza de entrega final | Se excluyeron `output/`, `tmp/`, zips y artefactos locales en `.gitignore`; el ZIP final se genera sin carpetas de trabajo ni rutas locales fantasma | `.gitignore`, zip final | Cerrado local |
 | FB-12 | Coleccion Postman requerida | Se tradujeron los casos existentes del `.http` a coleccion Postman v2.1 agrupada por servicio | `docs/pruebas-rest/coleccion-postman.json` | Cerrado local |
-| FB-13 | Blueprint Render requerido | Se agrego `render.yaml` con 12 web services y variables a completar en Render | `render.yaml`, `docs/render-despliegue.md` | Cerrado local |
+| FB-13 | Guia de despliegue Render requerida | Se documento el despliegue manual de los 12 servicios y variables externas | `docs/render-despliegue.md` | Cerrado local |
 
 ## Comandos de prueba unitaria
 

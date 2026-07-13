@@ -43,7 +43,7 @@ Backend distribuido con 10 microservicios de negocio Spring Boot, persistencia J
 - Swagger estandarizado en `/doc/swagger-ui.html`.
 - Maven wrappers habilitados localmente.
 - Mockito estabilizado en membership-service y payment-service.
-- Documentacion final, `.env.example` y pruebas REST agregadas.
+- Documentacion final y pruebas REST agregadas.
 
 ## Pruebas
 
@@ -59,7 +59,6 @@ Backend distribuido con 10 microservicios de negocio Spring Boot, persistencia J
 ## Despliegue local
 
 ```bash
-cp .env.example .env
 docker compose up --build
 ```
 

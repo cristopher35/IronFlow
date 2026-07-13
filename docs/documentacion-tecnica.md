@@ -21,7 +21,6 @@ IronFlow esta organizado como backend de microservicios Spring Boot con separaci
 | `microservicios-ironflow/api-gateway` | API Gateway |
 | `docs` | Documentacion, pruebas REST y defensas |
 | `docker-compose.yml` | Orquestacion local/Docker |
-| `.env.example` | Variables de entorno esperadas sin secretos |
 
 ## Responsabilidades por servicio
 
@@ -61,7 +60,7 @@ Para trazabilidad, el gateway agrega `X-IronFlow-Gateway` como header fijo y `X-
 
 - Servicios antiguos (`member`, `membership`, `payment`) tienen perfiles `dev`, `test` y `neon`.
 - Servicios nuevos usan `application.yml` con H2 local o variables `DB_*` para perfil remoto.
-- `.env.example` contiene las variables requeridas por `docker-compose.yml`.
+- Las variables locales se configuran en el entorno o en archivos `.env` no versionados.
 - No se deben subir secretos reales.
 
 ## Ejecucion desde cero
@@ -119,4 +118,4 @@ Hay pruebas unitarias con JUnit/Mockito en todos los microservicios de negocio. 
 
 ## Despliegue Render
 
-El proyecto incluye `render.yaml` y `docs/render-despliegue.md` como blueprint de despliegue para los 12 servicios. El despliegue publico no se ejecuto desde esta maquina porque requiere cuenta Render, conexion del repositorio y credenciales externas de base de datos. No se declara como validado en vivo mientras no existan URLs publicas reales.
+La guia `docs/render-despliegue.md` documenta el despliegue manual de los 12 servicios en Render. El despliegue publico no se ejecuto desde esta maquina porque requiere cuenta Render, conexion del repositorio y credenciales externas de base de datos. No se declara como validado en vivo mientras no existan URLs publicas reales.
