@@ -8,9 +8,9 @@ Sistema de gestión integral para gimnasios basado en una **arquitectura de micr
 
 | Nombre | Microservicios desarrollados |
 |---|---|
-| **Cristopher Meneses** | member-service, membership-service, payment-service |
-| **Hans Roman** | trainer-service, access-service, branch-service, notification-service |
-| **Nicolás Vera** | class-service, booking-service, equipment-service |
+| **Cristopher Meneses** | member-service, membership-service, payment-service, discovery-server |
+| **Hans Román** | trainer-service, access-service, branch-service, notification-service |
+| **Nicolás Vera** | class-service, booking-service, equipment-service, api-gateway |
 
 ---
 
