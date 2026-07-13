@@ -6,7 +6,7 @@ Sistema de gestión integral para gimnasios basado en una **arquitectura de micr
 
 ---
 
-## 👥 Integrantes del Equipo — Grupo N°1
+## Integrantes del Equipo — Grupo N°1
 
 | Nombre | Microservicios desarrollados |
 |---|---|
@@ -16,7 +16,7 @@ Sistema de gestión integral para gimnasios basado en una **arquitectura de micr
 
 ---
 
-## 📋 Descripción del Proyecto
+## Descripción del Proyecto
 
 **IronFlow** es una plataforma backend que aborda los principales problemas operativos del gimnasio: gestión de clientes, planes de membresía, pagos, reservas de clases, control de acceso, gestión de entrenadores, equipamiento y notificaciones.
 
@@ -30,7 +30,7 @@ La documentación de los procesos realizados, avances y evidencias del proyecto 
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ### Microservicios
 
@@ -60,7 +60,7 @@ La documentación de los procesos realizados, avances y evidencias del proyecto 
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Tecnología | Versión | Uso |
 |---|---|---|
@@ -79,7 +79,7 @@ La documentación de los procesos realizados, avances y evidencias del proyecto 
 
 ---
 
-## 📦 Estructura de cada Microservicio
+## Estructura de cada Microservicio
 
 Cada microservicio sigue el patrón **CSR (Controller-Service-Repository)** con la siguiente estructura:
 
@@ -96,7 +96,7 @@ src/main/java/cl.duocuc.crmenesesn.<microservicio>/
 
 ---
 
-## 🚀 Cómo Ejecutar el Proyecto
+## Cómo Ejecutar el Proyecto
 
 ### Requisitos previos
 - **Java 21** instalado y configurado en `JAVA_HOME`
@@ -143,47 +143,47 @@ Cada microservicio soporta 3 perfiles de base de datos:
 
 ---
 
-## 🎯 Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
 ### Persistencia y Modelado
-- ✅ Entidades JPA con `@Entity`, `@Id`, `@GeneratedValue`, `@ManyToOne`, `@OneToMany`
-- ✅ Relaciones con integridad referencial entre entidades del mismo microservicio
-- ✅ Cada microservicio tiene su propia base de datos independiente
-- ✅ Configuración de datasource y dialecto para H2, MySQL y PostgreSQL
+- Entidades JPA con `@Entity`, `@Id`, `@GeneratedValue`, `@ManyToOne`, `@OneToMany`
+- Relaciones con integridad referencial entre entidades del mismo microservicio
+- Cada microservicio tiene su propia base de datos independiente
+- Configuración de datasource y dialecto para H2, MySQL y PostgreSQL
 
 ### Validaciones
-- ✅ Bean Validation (Jakarta) en DTOs: `@NotBlank`, `@NotNull`, `@Positive`, `@Email`, `@Pattern`, `@Future`
-- ✅ Validación de datos en controladores con `@Valid`
-- ✅ Separación clara entre DTOs (Records) y entidades JPA
+- Bean Validation (Jakarta) en DTOs: `@NotBlank`, `@NotNull`, `@Positive`, `@Email`, `@Pattern`, `@Future`
+- Validación de datos en controladores con `@Valid`
+- Separación clara entre DTOs (Records) y entidades JPA
 
 ### Manejo de Excepciones
-- ✅ `@RestControllerAdvice` con `GlobalExceptionHandler` en cada microservicio
-- ✅ Códigos HTTP semánticos: 200, 201, 204, 400, 404, 409, 500
-- ✅ Respuestas estructuradas y consistentes con `ResponseEntity`
+- `@RestControllerAdvice` con `GlobalExceptionHandler` en cada microservicio
+- Códigos HTTP semánticos: 200, 201, 204, 400, 404, 409, 500
+- Respuestas estructuradas y consistentes con `ResponseEntity`
 
 ### Logging Estructurado (SLF4J)
-- ✅ `@Slf4j` de Lombok en todos los Services
-- ✅ Niveles de log: `info`, `warn`, `error` según corresponda
-- ✅ Trazabilidad completa entre capas (operaciones, errores, validaciones fallidas)
+- `@Slf4j` de Lombok en todos los Services
+- Niveles de log: `info`, `warn`, `error` según corresponda
+- Trazabilidad completa entre capas (operaciones, errores, validaciones fallidas)
 
 ### Comunicación entre Microservicios
-- ✅ Implementada con clientes REST como **RestTemplate** y **WebClient**
-- ✅ Manejo de excepciones con try/catch al llamar a servicios externos
-- ✅ Validación de datos recibidos antes de procesar
+- Implementada con clientes REST como **RestTemplate** y **WebClient**
+- Manejo de excepciones con try/catch al llamar a servicios externos
+- Validación de datos recibidos antes de procesar
 
 ### Reglas de Negocio
-- ✅ RUT y email únicos en miembros
-- ✅ Soft delete (estado INACTIVO) en lugar de eliminación física
-- ✅ Un miembro no puede tener 2 planes ACTIVOS simultáneamente
-- ✅ `fechaFin` del plan se calcula automáticamente
-- ✅ No se puede anular un pago ya anulado
-- ✅ No se puede crear horario para un tipo de clase INACTIVO
-- ✅ No se puede eliminar un tipo de clase con horarios activos
-- ✅ Validación de aforo en reservas
+- RUT y email únicos en miembros
+- Soft delete (estado INACTIVO) en lugar de eliminación física
+- Un miembro no puede tener 2 planes ACTIVOS simultáneamente
+- `fechaFin` del plan se calcula automáticamente
+- No se puede anular un pago ya anulado
+- No se puede crear horario para un tipo de clase INACTIVO
+- No se puede eliminar un tipo de clase con horarios activos
+- Validación de aforo en reservas
 
 ---
 
-## 📐 Patrones de Diseño Implementados
+## Patrones de Diseño Implementados
 
 | Patrón | Descripción |
 |---|---|
@@ -196,14 +196,14 @@ Cada microservicio soporta 3 perfiles de base de datos:
 
 ---
 
-## 📚 Documentación Adicional
+## Documentación Adicional
 
 - **`IronFlow-Informe-Tecnico-Defensa.docx`** — Informe técnico completo del proyecto
 - Documentos individuales de defensa por microservicio en formato `.docx`
 
 ---
 
-## 📅 Información Académica
+## Información Académica
 
 - **Asignatura:** DSY1103 — Desarrollo Fullstack I
 - **Institución:** Instituto Profesional Duoc UC
@@ -213,7 +213,7 @@ Cada microservicio soporta 3 perfiles de base de datos:
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto es de uso académico y fue desarrollado para fines educativos en el contexto de la asignatura DSY1103 de Duoc UC.
 

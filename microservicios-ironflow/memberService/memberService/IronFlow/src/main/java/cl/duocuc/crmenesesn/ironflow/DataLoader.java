@@ -29,6 +29,6 @@ public class DataLoader implements CommandLineRunner {
                     .build();
             miembroRepository.save(miembro);
         }
-        System.out.println("✅ DataLoader: 10 miembros generados con DataFaker");
+        System.out.println("DataLoader: 10 miembros generados con DataFaker");
     }
 }
