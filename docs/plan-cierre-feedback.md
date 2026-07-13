@@ -26,16 +26,16 @@
 Ejecutar desde la raiz del repositorio:
 
 ```bash
-(cd microservicios-ironflow/memberService/memberService/IronFlow && ./mvnw test)
-(cd microservicios-ironflow/Membership-service && ./mvnw test)
-(cd microservicios-ironflow/Payment-service && ./mvnw test)
-(cd microservicios-ironflow/class-service/class-service && ./mvnw test)
-(cd microservicios-ironflow/booking-service/booking-service && ./mvnw test)
-(cd microservicios-ironflow/trainer-service/trainer-service && ./mvnw test)
-(cd microservicios-ironflow/access-service/access-service && ./mvnw test)
-(cd microservicios-ironflow/equipment-service/equipment-service/equipment-service && ./mvnw test)
-(cd microservicios-ironflow/branch-service/branch-service && ./mvnw test)
-(cd microservicios-ironflow/notification-service/notification-service && ./mvnw test)
+(cd microservicios-ironflow/member-service && ./mvnw test)
+(cd microservicios-ironflow/membership-service && ./mvnw test)
+(cd microservicios-ironflow/payment-service && ./mvnw test)
+(cd microservicios-ironflow/class-service && ./mvnw test)
+(cd microservicios-ironflow/booking-service && ./mvnw test)
+(cd microservicios-ironflow/trainer-service && ./mvnw test)
+(cd microservicios-ironflow/access-service && ./mvnw test)
+(cd microservicios-ironflow/equipment-service && ./mvnw test)
+(cd microservicios-ironflow/branch-service && ./mvnw test)
+(cd microservicios-ironflow/notification-service && ./mvnw test)
 (cd microservicios-ironflow/api-gateway && ./mvnw test)
 (cd microservicios-ironflow/discovery-server && ./mvnw test)
 ```

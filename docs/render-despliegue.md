@@ -12,16 +12,16 @@ Estado local previo al despliegue: Docker Compose fue validado end-to-end el 202
 |---|---|---|---|
 | `ironflow-discovery-server` | `microservicios-ironflow/discovery-server` | Web Service | `8761` |
 | `ironflow-api-gateway` | `microservicios-ironflow/api-gateway` | Web Service | `8080` |
-| `ironflow-member-service` | `microservicios-ironflow/memberService/memberService/IronFlow` | Web Service | `8081` |
-| `ironflow-membership-service` | `microservicios-ironflow/Membership-service` | Web Service | `8082` |
-| `ironflow-payment-service` | `microservicios-ironflow/Payment-service` | Web Service | `8083` |
-| `ironflow-class-service` | `microservicios-ironflow/class-service/class-service` | Web Service | `8084` |
-| `ironflow-booking-service` | `microservicios-ironflow/booking-service/booking-service` | Web Service | `8085` |
-| `ironflow-trainer-service` | `microservicios-ironflow/trainer-service/trainer-service` | Web Service | `8086` |
-| `ironflow-access-service` | `microservicios-ironflow/access-service/access-service` | Web Service | `8087` |
-| `ironflow-equipment-service` | `microservicios-ironflow/equipment-service/equipment-service/equipment-service` | Web Service | `8088` |
-| `ironflow-branch-service` | `microservicios-ironflow/branch-service/branch-service` | Web Service | `8089` |
-| `ironflow-notification-service` | `microservicios-ironflow/notification-service/notification-service` | Web Service | `8090` |
+| `ironflow-member-service` | `microservicios-ironflow/member-service` | Web Service | `8081` |
+| `ironflow-membership-service` | `microservicios-ironflow/membership-service` | Web Service | `8082` |
+| `ironflow-payment-service` | `microservicios-ironflow/payment-service` | Web Service | `8083` |
+| `ironflow-class-service` | `microservicios-ironflow/class-service` | Web Service | `8084` |
+| `ironflow-booking-service` | `microservicios-ironflow/booking-service` | Web Service | `8085` |
+| `ironflow-trainer-service` | `microservicios-ironflow/trainer-service` | Web Service | `8086` |
+| `ironflow-access-service` | `microservicios-ironflow/access-service` | Web Service | `8087` |
+| `ironflow-equipment-service` | `microservicios-ironflow/equipment-service` | Web Service | `8088` |
+| `ironflow-branch-service` | `microservicios-ironflow/branch-service` | Web Service | `8089` |
+| `ironflow-notification-service` | `microservicios-ironflow/notification-service` | Web Service | `8090` |
 
 ## Blueprint
 

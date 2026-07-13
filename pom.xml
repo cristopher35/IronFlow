@@ -13,17 +13,17 @@
     <description>Agregador Maven de microservicios IronFlow</description>
 
     <modules>
-        <module>microservicios-ironflow/access-service/access-service</module>
+        <module>microservicios-ironflow/access-service</module>
         <module>microservicios-ironflow/api-gateway</module>
-        <module>microservicios-ironflow/booking-service/booking-service</module>
-        <module>microservicios-ironflow/branch-service/branch-service</module>
-        <module>microservicios-ironflow/class-service/class-service</module>
+        <module>microservicios-ironflow/booking-service</module>
+        <module>microservicios-ironflow/branch-service</module>
+        <module>microservicios-ironflow/class-service</module>
         <module>microservicios-ironflow/discovery-server</module>
-        <module>microservicios-ironflow/equipment-service/equipment-service/equipment-service</module>
-        <module>microservicios-ironflow/memberService/memberService/IronFlow</module>
-        <module>microservicios-ironflow/Membership-service</module>
-        <module>microservicios-ironflow/notification-service/notification-service</module>
-        <module>microservicios-ironflow/Payment-service</module>
-        <module>microservicios-ironflow/trainer-service/trainer-service</module>
+        <module>microservicios-ironflow/equipment-service</module>
+        <module>microservicios-ironflow/member-service</module>
+        <module>microservicios-ironflow/membership-service</module>
+        <module>microservicios-ironflow/notification-service</module>
+        <module>microservicios-ironflow/payment-service</module>
+        <module>microservicios-ironflow/trainer-service</module>
     </modules>
 </project>

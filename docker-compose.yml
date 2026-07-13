@@ -13,7 +13,7 @@ services:
 
   member-service:
     build:
-      context: ./microservicios-ironflow/memberService/memberService/IronFlow
+      context: ./microservicios-ironflow/member-service
     container_name: member-service
     depends_on:
       - discovery-server
@@ -27,7 +27,7 @@ services:
 
   membership-service:
     build:
-      context: ./microservicios-ironflow/Membership-service
+      context: ./microservicios-ironflow/membership-service
     container_name: membership-service
     depends_on:
       - discovery-server
@@ -43,7 +43,7 @@ services:
 
   payment-service:
     build:
-      context: ./microservicios-ironflow/Payment-service
+      context: ./microservicios-ironflow/payment-service
     container_name: payment-service
     depends_on:
       - discovery-server
@@ -59,7 +59,7 @@ services:
 
   booking-service:
     build:
-      context: ./microservicios-ironflow/booking-service/booking-service
+      context: ./microservicios-ironflow/booking-service
     container_name: booking-service
     depends_on:
       - discovery-server
@@ -77,7 +77,7 @@ services:
 
   class-service:
     build:
-      context: ./microservicios-ironflow/class-service/class-service
+      context: ./microservicios-ironflow/class-service
     container_name: class-service
     depends_on:
       - discovery-server
@@ -93,7 +93,7 @@ services:
 
   trainer-service:
     build:
-      context: ./microservicios-ironflow/trainer-service/trainer-service
+      context: ./microservicios-ironflow/trainer-service
     container_name: trainer-service
     depends_on:
       - discovery-server
@@ -107,7 +107,7 @@ services:
 
   access-service:
     build:
-      context: ./microservicios-ironflow/access-service/access-service
+      context: ./microservicios-ironflow/access-service
     container_name: access-service
     depends_on:
       - discovery-server
@@ -123,7 +123,7 @@ services:
 
   equipment-service:
     build:
-      context: ./microservicios-ironflow/equipment-service/equipment-service/equipment-service
+      context: ./microservicios-ironflow/equipment-service
     container_name: equipment-service
     depends_on:
       - discovery-server
@@ -137,7 +137,7 @@ services:
 
   branch-service:
     build:
-      context: ./microservicios-ironflow/branch-service/branch-service
+      context: ./microservicios-ironflow/branch-service
     container_name: branch-service
     depends_on:
       - discovery-server
@@ -151,7 +151,7 @@ services:
 
   notification-service:
     build:
-      context: ./microservicios-ironflow/notification-service/notification-service
+      context: ./microservicios-ironflow/notification-service
     container_name: notification-service
     depends_on:
       - discovery-server

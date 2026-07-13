@@ -6,10 +6,10 @@ Responsable de servicios de entrenadores, acceso, sucursales y notificaciones.
 
 ## Modulos asociados
 
-- `microservicios-ironflow/trainer-service/trainer-service`
-- `microservicios-ironflow/access-service/access-service`
-- `microservicios-ironflow/branch-service/branch-service`
-- `microservicios-ironflow/notification-service/notification-service`
+- `microservicios-ironflow/trainer-service`
+- `microservicios-ironflow/access-service`
+- `microservicios-ironflow/branch-service`
+- `microservicios-ironflow/notification-service`
 
 ## Funcionalidades principales
 

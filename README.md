@@ -105,7 +105,7 @@ cd IronFlow
 
 2. Entra a la carpeta de un microservicio (por ejemplo el servicio de miembros):
 ```bash
-cd microservicios-ironflow/memberService/memberService/IronFlow
+cd microservicios-ironflow/member-service
 ```
 
 3. Configura el JAVA_HOME (Windows PowerShell):
