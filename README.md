@@ -1,3 +1,5 @@
+![Banner de IronFlow](docs/assets/ironflow-banner.png)
+
 # IronFlow — Sistema de Gestión de Gimnasio
 
 Sistema de gestión integral para gimnasios basado en una **arquitectura de microservicios independientes**, desarrollado como Proyecto Semestral para la asignatura **DSY1103 — Desarrollo Fullstack I** del Instituto Profesional Duoc UC.
