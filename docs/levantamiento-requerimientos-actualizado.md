@@ -8,7 +8,7 @@ Este documento contrasta el levantamiento inicial de IronFlow con el estado fina
 | RF-05 a RF-06 | Planes y membresias | Se mantuvo y se agrego validacion remota de socio | Evita planes activos duplicados | Implementado | `membership-service` |
 | RF-07 | Pagos | Se mantuvo y se agrego anulacion | Permite trazabilidad de pagos | Implementado | `payment-service` |
 | RF-08 a RF-09 | Clases y horarios | Se mantuvo | Permite programar actividades | Implementado | `class-service` |
-| RF-10 | Reserva con control de cupo | Se ajusto | El sistema valida miembro, horario y reserva duplicada; el decremento transaccional de cupos queda pendiente | Implementado parcialmente | `booking-service` |
+| RF-10 | Reserva con control de cupo | Se ajusto | El sistema valida miembro, horario y reserva duplicada; el control de aforo (incremento/decremento) se maneja de forma transaccional en class-service (HorarioServiceImpl.reservarCupo/liberarCupo con @Transactional) e invocado desde booking-service al crear o cancelar una reserva | Implementado | `booking-service`, `class-service` (HorarioServiceImpl) |
 | RF-11 | Cancelar reserva | Se mantuvo | Libera logisticamente la reserva | Implementado | `booking-service` |
 | RF-12 a RF-13 | Control de acceso | Se mantuvo | Valida membresia antes del ingreso | Implementado | `access-service` |
 | RF-14 a RF-15 | Entrenadores | Se mantuvo | Necesario para horarios | Implementado | `trainer-service`, `class-service` |
