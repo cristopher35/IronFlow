@@ -199,7 +199,7 @@ Cada microservicio soporta 3 perfiles de base de datos:
 ## Documentación Adicional
 
 - **`IronFlow-Informe-Tecnico-Defensa.docx`** — Informe técnico completo del proyecto
-- Documentos individuales de defensa por microservicio en formato `.docx`
+- Documentos individuales de defensa tecnica en `docs/defensa-individual/*.md`
 
 ---
 
@@ -267,6 +267,8 @@ docker compose down
 ```
 
 Para ejecutar todos los servicios desde el IDE, se deben iniciar los puertos 8081 a 8090 y luego el Gateway en 8080. Los clientes de `class-service` y `notification-service` usan WebClient, y `booking-service` y `access-service` reciben sus URLs remotas desde variables de entorno para funcionar correctamente en Docker.
+
+El archivo `.env.example` contiene variables de referencia sin credenciales reales. Para configuraciones locales o remotas, copiarlo como `.env` y reemplazar los valores `change_me` por credenciales del entorno correspondiente.
 
 ## Preparación para despliegue remoto
 

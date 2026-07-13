@@ -19,8 +19,10 @@ IronFlow esta organizado como backend de microservicios Spring Boot con separaci
 | `microservicios-ironflow/branch-service/branch-service` | branch-service |
 | `microservicios-ironflow/notification-service/notification-service` | notification-service |
 | `microservicios-ironflow/api-gateway` | API Gateway |
-| `docs` | Documentacion, pruebas REST y defensas |
+| `docs` | Documentacion y pruebas REST |
+| `docs/defensa-individual` | Evidencia individual de cada integrante |
 | `docker-compose.yml` | Orquestacion local/Docker |
+| `.env.example` | Plantilla de variables sin secretos reales |
 
 ## Responsabilidades por servicio
 
@@ -60,6 +62,7 @@ Para trazabilidad, el gateway agrega `X-IronFlow-Gateway` como header fijo y `X-
 
 - Servicios antiguos (`member`, `membership`, `payment`) tienen perfiles `dev`, `test` y `neon`.
 - Servicios nuevos usan `application.yml` con H2 local o variables `DB_*` para perfil remoto.
+- `.env.example` entrega una plantilla versionada sin secretos reales.
 - Las variables locales se configuran en el entorno o en archivos `.env` no versionados.
 - No se deben subir secretos reales.
 
@@ -70,6 +73,7 @@ Requisitos:
 - Java 21.
 - Maven Wrapper incluido por servicio.
 - Docker para `docker compose up --build` cuando se quiera probar contenedores.
+- Copiar `.env.example` como `.env` solo si se usaran perfiles remotos o credenciales externas.
 
 Pasos:
 

@@ -7,7 +7,7 @@
 | FB-03 | Maven wrappers sin permiso de ejecucion local | Se habilitaron wrappers locales | `mvnw` por servicio | Corregido |
 | FB-04 | Tests de membership/payment fallaban por Mockito inline | Se agrego configuracion `mock-maker-subclass` | `src/test/resources/mockito-extensions` | Corregido |
 | FB-05 | Faltaba evidencia documental final | Se agrego carpeta `docs` con matriz, plan, documentacion, pruebas REST y defensas base | `docs/**` | Corregido localmente |
-| FB-06 | Variables locales sin secretos versionados | Se mantuvo la configuracion sensible fuera del repositorio | `.gitignore`, `docker-compose.yml` | Corregido |
+| FB-06 | Variables locales sin secretos versionados | Se agrego `.env.example` con placeholders y se mantiene `.env` real fuera del repositorio | `.env.example`, `.gitignore`, `docker-compose.yml` | Corregido |
 | FB-07 | Zip por integrante no servia como entrega final completa | Se preparara zip general con raiz, docs, compose y servicios | `output/entrega-final/` | En validacion |
 | FB-08 | Eureka/discovery requerido por rubrica | Implementado con `discovery-server`, clientes Eureka y gateway `lb://` | Tests OK | Cerrado local |
 | FB-09 | Seguridad/roles requerido por rubrica | Implementado en `api-gateway` con BCrypt y roles `ADMIN`, `SOCIO`, `RECEPCIONISTA` | Tests 401/403 OK | Cerrado local |
