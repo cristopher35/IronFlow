@@ -43,6 +43,16 @@ class EntrenadorServiceTest {
     }
 
     @Test
+    @DisplayName("Debe rechazar correo duplicado al crear entrenador")
+    void rechazaCorreoDuplicadoAlCrear() {
+        when(repository.existsByCorreoIgnoreCase("trainer@ironflow.cl")).thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.crearEntrenador(request("ACTIVO", "trainer@ironflow.cl")));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("Debe listar solo entrenadores activos")
     void listaSoloEntrenadoresActivos() {
         when(repository.findByActivoTrue()).thenReturn(List.of(entrenador("ACTIVO", true)));
@@ -52,6 +62,41 @@ class EntrenadorServiceTest {
         assertEquals(1, response.size());
         verify(repository).findByActivoTrue();
         verify(repository, never()).findAll();
+    }
+
+    @Test
+    @DisplayName("Debe buscar entrenador por id existente")
+    void buscaPorIdExistente() {
+        when(repository.findById(1L)).thenReturn(Optional.of(entrenador("ACTIVO", true)));
+
+        EntrenadorResponse response = service.buscarPorId(1L);
+
+        assertEquals(1L, response.id());
+        assertEquals("Funcional", response.especialidad());
+    }
+
+    @Test
+    @DisplayName("Debe fallar al buscar entrenador inexistente")
+    void fallaBuscarPorIdInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(com.ironflow.trainerservice.exception.RecursoNoEncontradoException.class,
+                () -> service.buscarPorId(99L));
+    }
+
+    @Test
+    @DisplayName("Debe actualizar entrenador activo")
+    void actualizaEntrenadorActivo() {
+        Entrenador entrenador = entrenador("ACTIVO", true);
+        when(repository.findById(1L)).thenReturn(Optional.of(entrenador));
+        when(repository.existsByCorreoIgnoreCaseAndIdNot("nuevo@ironflow.cl", 1L)).thenReturn(false);
+        when(repository.save(entrenador)).thenReturn(entrenador);
+
+        EntrenadorResponse response = service.actualizarEntrenador(1L, request("INACTIVO", "nuevo@ironflow.cl"));
+
+        assertEquals("INACTIVO", response.estado());
+        assertFalse(response.activo());
+        assertEquals("nuevo@ironflow.cl", response.correo());
     }
 
     @Test
@@ -76,6 +121,28 @@ class EntrenadorServiceTest {
         assertEquals("INACTIVO", entrenador.getEstado());
         assertFalse(entrenador.getActivo());
         verify(repository).save(entrenador);
+    }
+
+    @Test
+    @DisplayName("Debe fallar al eliminar entrenador inexistente")
+    void fallaEliminarEntrenadorInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(com.ironflow.trainerservice.exception.RecursoNoEncontradoException.class,
+                () -> service.eliminarEntrenador(99L));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe listar entrenadores por especialidad")
+    void listaPorEspecialidad() {
+        when(repository.findByEspecialidadIgnoreCaseAndActivoTrue("Funcional"))
+                .thenReturn(List.of(entrenador("ACTIVO", true)));
+
+        List<EntrenadorResponse> response = service.listarPorEspecialidad("Funcional");
+
+        assertEquals(1, response.size());
+        verify(repository).findByEspecialidadIgnoreCaseAndActivoTrue("Funcional");
     }
 
     private EntrenadorRequest request(String estado, String correo) {

@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +54,54 @@ class NotificacionServiceTest {
     }
 
     @Test
+    @DisplayName("Debe traducir NoSuchElementException del cliente remoto a recurso no encontrado")
+    void traduceNoSuchElementDelCliente() {
+        when(memberClient.getMemberById(3L)).thenThrow(new NoSuchElementException("no existe"));
+
+        assertThrows(RecursoNoEncontradoException.class, () -> service.crearNotificacion(request(3L)));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe propagar indisponibilidad de member-service")
+    void propagaIndisponibilidadMemberService() {
+        when(memberClient.getMemberById(4L)).thenThrow(new IllegalStateException("down"));
+
+        assertThrows(IllegalStateException.class, () -> service.crearNotificacion(request(4L)));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Debe listar notificaciones")
+    void listaNotificaciones() {
+        when(repository.findAll()).thenReturn(List.of(notificacion(1L, 1L)));
+
+        List<NotificacionResponse> response = service.listarNotificaciones();
+
+        assertEquals(1, response.size());
+        verify(repository).findAll();
+    }
+
+    @Test
+    @DisplayName("Debe buscar notificación por id")
+    void buscaNotificacionPorId() {
+        when(repository.findById(1L)).thenReturn(Optional.of(notificacion(1L, 1L)));
+
+        NotificacionResponse response = service.buscarPorId(1L);
+
+        assertEquals(1L, response.id());
+        assertEquals("EMAIL", response.canal());
+    }
+
+    @Test
+    @DisplayName("Debe fallar al buscar notificación inexistente")
+    void fallaBuscarNotificacionInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNoEncontradoException.class, () -> service.buscarPorId(99L));
+    }
+
+    @Test
     @DisplayName("Debe actualizar conservando fecha de envío y revalidando miembro")
     void actualizarConservaFechaDeEnvioYRevalidaMiembro() {
         LocalDateTime fecha = LocalDateTime.now().minusDays(1);
@@ -67,6 +117,27 @@ class NotificacionServiceTest {
         verify(memberClient).getMemberById(1L);
     }
 
+    @Test
+    @DisplayName("Debe fallar al actualizar notificación inexistente")
+    void fallaActualizarNotificacionInexistente() {
+        when(repository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(RecursoNoEncontradoException.class, () -> service.actualizarNotificacion(99L, request(1L)));
+        verify(memberClient, never()).getMemberById(anyLong());
+    }
+
+    @Test
+    @DisplayName("Debe listar por canal y por miembro")
+    void listaPorCanalYMiembro() {
+        when(repository.findByCanalIgnoreCase("EMAIL")).thenReturn(List.of(notificacion(1L, 1L)));
+        when(repository.findByMiembroId(1L)).thenReturn(List.of(notificacion(1L, 1L)));
+
+        assertEquals(1, service.listarPorCanal("EMAIL").size());
+        assertEquals(1, service.listarPorMiembro(1L).size());
+        verify(repository).findByCanalIgnoreCase("EMAIL");
+        verify(repository).findByMiembroId(1L);
+    }
+
     private NotificacionRequest request(Long miembroId) {
         NotificacionRequest request = new NotificacionRequest();
         request.setMiembroId(miembroId);
@@ -75,5 +146,17 @@ class NotificacionServiceTest {
         request.setMensaje("Mensaje de prueba");
         request.setEstado("pendiente");
         return request;
+    }
+
+    private Notificacion notificacion(Long id, Long miembroId) {
+        return Notificacion.builder()
+                .id(id)
+                .miembroId(miembroId)
+                .canal("EMAIL")
+                .asunto("Bienvenida")
+                .mensaje("Mensaje de prueba")
+                .estado("PENDIENTE")
+                .fechaEnvio(LocalDateTime.now())
+                .build();
     }
 }
